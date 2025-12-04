@@ -25,6 +25,7 @@ import ContactManager from './pages/ContactManager'
 import SiteManager from './pages/SiteManager'
 import DocumentManager from './pages/DocumentManager'
 import GalleryManager from './pages/GalleryManager'
+import UserManagement from './pages/UserManagement'
 import { BeeDataProvider } from './context/BeeDataContext'
 import { AuthProvider } from './context/AuthContext'
 import RequireAuth from './components/RequireAuth'
@@ -65,6 +66,7 @@ function App() {
                                 <Route path="administration/gallery" element={<GalleryManager />} />
                                 <Route path="knowledge/edit" element={<KnowledgeEditor />} />
                                 <Route path="administration/knowledge" element={<KnowledgeEditor />} />
+                                <Route path="administration/users" element={<UserManagement />} />
                             </Route>
                         </Route>
                     </Routes>

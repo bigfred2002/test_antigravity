@@ -54,6 +54,20 @@ const Login = () => {
         }
     }
 
+    const connectAdmin = () => {
+        setLoginIdentifier('admin')
+        setLoginPassword('admin')
+        setMessage('Connexion au compte administrateur...')
+        setError('')
+        try {
+            login('admin', 'admin')
+            navigate('/')
+        } catch (err) {
+            setError(err.message)
+            setMessage('')
+        }
+    }
+
     return (
         <div className="auth-layout">
             <div className="auth-illustration" aria-hidden="true">
@@ -87,6 +101,9 @@ const Login = () => {
                             <h3>Se connecter</h3>
                             <button type="button" className="pill" onClick={connectDemo}>
                                 Utiliser le compte démo
+                            </button>
+                            <button type="button" className="pill" onClick={connectAdmin}>
+                                Utiliser le compte admin
                             </button>
                         </div>
                         <label className="form-field">
