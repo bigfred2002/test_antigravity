@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { useAuth } from './AuthContext'
 import {
     apiaries as initialApiaries,
     equipment as initialEquipment,
@@ -9,13 +10,35 @@ import {
 } from '../data/mockData'
 
 const BeeDataContext = createContext()
-const STORAGE_KEY = 'bee-data-store'
+const STORAGE_PREFIX = 'bee-data-store'
 
-const getPersistedData = () => {
-    if (typeof window === 'undefined' || typeof localStorage === 'undefined') return null
+const defaultEmptyData = {
+    apiaries: [],
+    hives: [],
+    visits: [],
+    harvests: [],
+    equipment: [],
+    knowledge: initialKnowledge,
+    movements: [],
+}
+
+const seededData = {
+    apiaries: initialApiaries,
+    hives: initialHives,
+    visits: initialVisits,
+    harvests: initialHarvests,
+    equipment: initialEquipment,
+    knowledge: initialKnowledge,
+    movements: [],
+}
+
+const getStorageKey = (userId) => `${STORAGE_PREFIX}-${userId}`
+
+const getPersistedData = (userId) => {
+    if (!userId || typeof window === 'undefined' || typeof localStorage === 'undefined') return null
 
     try {
-        const raw = localStorage.getItem(STORAGE_KEY)
+        const raw = localStorage.getItem(getStorageKey(userId))
         return raw ? JSON.parse(raw) : null
     } catch (error) {
         console.warn('Impossible de charger les données locales', error)
@@ -32,19 +55,43 @@ const getWithFallback = (persisted, key, fallback) => {
 }
 
 export const BeeDataProvider = ({ children }) => {
-    const persisted = getPersistedData()
-    const [apiaries, setApiaries] = useState(() => getWithFallback(persisted, 'apiaries', initialApiaries))
-    const [hiveList, setHiveList] = useState(() => getWithFallback(persisted, 'hives', initialHives))
-    const [visitList, setVisitList] = useState(() => getWithFallback(persisted, 'visits', initialVisits))
-    const [harvestList, setHarvestList] = useState(() => getWithFallback(persisted, 'harvests', initialHarvests))
-    const [equipment, setEquipment] = useState(() => getWithFallback(persisted, 'equipment', initialEquipment))
-    const [knowledge, setKnowledge] = useState(() => getWithFallback(persisted, 'knowledge', initialKnowledge))
-    const [movements, setMovements] = useState(() => getWithFallback(persisted, 'movements', []))
+    const { currentUser } = useAuth()
+    const [apiaries, setApiaries] = useState(defaultEmptyData.apiaries)
+    const [hiveList, setHiveList] = useState(defaultEmptyData.hives)
+    const [visitList, setVisitList] = useState(defaultEmptyData.visits)
+    const [harvestList, setHarvestList] = useState(defaultEmptyData.harvests)
+    const [equipment, setEquipment] = useState(defaultEmptyData.equipment)
+    const [knowledge, setKnowledge] = useState(defaultEmptyData.knowledge)
+    const [movements, setMovements] = useState(defaultEmptyData.movements)
     const [status, setStatus] = useState('idle')
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        if (typeof window === 'undefined' || typeof localStorage === 'undefined') return
+        if (!currentUser) {
+            setApiaries(defaultEmptyData.apiaries)
+            setHiveList(defaultEmptyData.hives)
+            setVisitList(defaultEmptyData.visits)
+            setHarvestList(defaultEmptyData.harvests)
+            setEquipment(defaultEmptyData.equipment)
+            setKnowledge(defaultEmptyData.knowledge)
+            setMovements(defaultEmptyData.movements)
+            return
+        }
+
+        const persisted = getPersistedData(currentUser.id)
+        const baseData = currentUser.id === 'demo' ? seededData : defaultEmptyData
+
+        setApiaries(getWithFallback(persisted, 'apiaries', baseData.apiaries))
+        setHiveList(getWithFallback(persisted, 'hives', baseData.hives))
+        setVisitList(getWithFallback(persisted, 'visits', baseData.visits))
+        setHarvestList(getWithFallback(persisted, 'harvests', baseData.harvests))
+        setEquipment(getWithFallback(persisted, 'equipment', baseData.equipment))
+        setKnowledge(getWithFallback(persisted, 'knowledge', baseData.knowledge))
+        setMovements(getWithFallback(persisted, 'movements', baseData.movements))
+    }, [currentUser])
+
+    useEffect(() => {
+        if (!currentUser || typeof window === 'undefined' || typeof localStorage === 'undefined') return
 
         const payload = {
             apiaries,
@@ -56,8 +103,8 @@ export const BeeDataProvider = ({ children }) => {
             movements,
         }
 
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
-    }, [apiaries, hiveList, visitList, harvestList, equipment])
+        localStorage.setItem(getStorageKey(currentUser.id), JSON.stringify(payload))
+    }, [apiaries, hiveList, visitList, harvestList, equipment, knowledge, movements, currentUser])
 
     const addApiary = (payload) => {
         const newApiary = { id: `apiary-${Date.now()}`, ...payload }
