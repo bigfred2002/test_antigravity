@@ -4,6 +4,9 @@ import Dashboard from './pages/Dashboard'
 import VisitEntry from './pages/VisitEntry'
 import ApiaryDefinition from './pages/ApiaryDefinition'
 import HiveDefinition from './pages/HiveDefinition'
+import HarvestEntry from './pages/HarvestEntry'
+import Inventory from './pages/Inventory'
+import Records from './pages/Records'
 import { BeeDataProvider } from './context/BeeDataContext'
 
 function App() {
@@ -16,6 +19,9 @@ function App() {
                             <Route path="visit" element={<VisitEntry />} />
                             <Route path="apiary" element={<ApiaryDefinition />} />
                             <Route path="hives" element={<HiveDefinition />} />
+                            <Route path="harvest" element={<HarvestEntry />} />
+                            <Route path="inventory" element={<Inventory />} />
+                            <Route path="records" element={<Records />} />
                         </Route>
                     </Routes>
                 </Router>

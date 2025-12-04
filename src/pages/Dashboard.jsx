@@ -45,7 +45,7 @@ const inspiration = [
 ]
 
 const Dashboard = () => {
-    const { metrics, visits, hives, equipment, updateEquipmentStock } = useBeeData()
+    const { metrics, visits, hives, apiaries, harvests, equipment, updateEquipmentStock } = useBeeData()
 
     const recentVisits = visits
         .slice()
@@ -54,7 +54,14 @@ const Dashboard = () => {
         .map((visit) => ({
             ...visit,
             hiveName: hives.find((hive) => hive.id === visit.hiveId)?.name || 'Ruche inconnue',
+            apiaryName: apiaries.find((apiary) => apiary.id === visit.apiaryId)?.name || 'Rucher non défini',
         }))
+
+    const groupedEquipment = equipment.reduce((acc, item) => {
+        const key = item.category || 'Non classé'
+        acc[key] = acc[key] ? [...acc[key], item] : [item]
+        return acc
+    }, {})
     return (
         <div className="dashboard">
             <section className="hero-panel" aria-label="Mise en avant apicole">
@@ -113,6 +120,14 @@ const Dashboard = () => {
                         <p className="stat-caption">Indice sur la vitalité des colonies</p>
                     </div>
                 </div>
+                <div className="stat-card">
+                    <div className="stat-icon">🍯</div>
+                    <div>
+                        <h3>Récolté cette année</h3>
+                        <p className="value">{metrics.totalHarvestKg} kg</p>
+                        <p className="stat-caption">Somme des lots saisis</p>
+                    </div>
+                </div>
             </div>
 
             <section className="panel" aria-label="Synthèse rucher">
@@ -128,7 +143,7 @@ const Dashboard = () => {
                         <article key={visit.id} className="visit-row" aria-label={`Visite du ${visit.date}`}>
                             <div className="visit-meta">
                                 <p className="visit-date">{new Date(visit.date).toLocaleDateString('fr-FR')}</p>
-                                <p className="visit-hive">{visit.hiveName}</p>
+                                <p className="visit-hive">{visit.apiaryName} · {visit.hiveName}</p>
                             </div>
                             <div className="visit-info">
                                 <span className="pill">Poids {visit.weight} kg</span>
@@ -157,39 +172,52 @@ const Dashboard = () => {
                     </div>
                     <p className="panel-caption">Cadres, hausses, traitements et pots prêts pour les prochaines visites.</p>
                 </div>
-                <div className="equipment-grid">
-                    {equipment.map((item) => {
-                        const ratio = Math.min(100, Math.round((item.inStock / item.needed) * 100))
-                        return (
-                            <article key={item.id} className="equipment-card" aria-label={item.name}>
-                                <div className="equipment-card__header">
-                                    <div>
-                                        <p className="eyebrow">{item.category}</p>
-                                        <h4>{item.name}</h4>
-                                    </div>
-                                    <span className="pill">
-                                        {item.inStock}/{item.needed}
-                                    </span>
-                                </div>
-                                <p className="equipment-note">{item.note}</p>
-                                <div className="progress">
-                                    <div className="progress-bar" style={{ width: `${ratio}%` }} />
-                                </div>
-                                <div className="equipment-actions">
-                                    <button type="button" className="btn-ghost" onClick={() => updateEquipmentStock(item.id, 1)}>
-                                        +1 stock
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn-ghost"
-                                        onClick={() => updateEquipmentStock(item.id, -1)}
-                                    >
-                                        -1 stock
-                                    </button>
-                                </div>
-                            </article>
-                        )
-                    })}
+                <div className="definition-grid">
+                    {Object.entries(groupedEquipment).map(([category, items]) => (
+                        <article key={category} className="definition-card">
+                            <h4>{category}</h4>
+                            <div className="equipment-grid">
+                                {items.map((item) => {
+                                    const ratio = item.needed
+                                        ? Math.min(100, Math.round((item.inStock / item.needed) * 100))
+                                        : 100
+                                    return (
+                                        <article key={item.id} className="equipment-card" aria-label={item.name}>
+                                            <div className="equipment-card__header">
+                                                <div>
+                                                    <p className="eyebrow">{item.category}</p>
+                                                    <h4>{item.name}</h4>
+                                                </div>
+                                                <span className="pill">
+                                                    {item.inStock}/{item.needed}
+                                                </span>
+                                            </div>
+                                            <p className="equipment-note">{item.note}</p>
+                                            <div className="progress">
+                                                <div className="progress-bar" style={{ width: `${ratio}%` }} />
+                                            </div>
+                                            <div className="equipment-actions">
+                                                <button
+                                                    type="button"
+                                                    className="btn-ghost"
+                                                    onClick={() => updateEquipmentStock(item.id, 1)}
+                                                >
+                                                    +1 stock
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="btn-ghost"
+                                                    onClick={() => updateEquipmentStock(item.id, -1)}
+                                                >
+                                                    -1 stock
+                                                </button>
+                                            </div>
+                                        </article>
+                                    )
+                                })}
+                            </div>
+                        </article>
+                    ))}
                 </div>
             </section>
 

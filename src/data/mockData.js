@@ -1,15 +1,30 @@
-export const apiary = {
-    name: 'Rucher des Trois Vallées',
-    location: 'Plateau de Millevaches, Corrèze',
-    altitude: '650 m',
-    flora: 'Bruyère, acacia, châtaignier, prairies fleuries',
-    objectives: 'Maintenir des colonies douces et productives sur trois sites complémentaires.',
-    notes: 'Rucher ventilé, accessible en 4x4, orientation sud-est pour capter le soleil tôt.',
-}
+export const apiaries = [
+    {
+        id: 'apiary-1',
+        name: 'Rucher des Trois Vallées',
+        category: 'Montagne',
+        location: 'Plateau de Millevaches, Corrèze',
+        altitude: '650 m',
+        flora: 'Bruyère, acacia, châtaignier, prairies fleuries',
+        objectives: 'Maintenir des colonies douces et productives sur trois sites complémentaires.',
+        notes: 'Rucher ventilé, accessible en 4x4, orientation sud-est pour capter le soleil tôt.',
+    },
+    {
+        id: 'apiary-2',
+        name: 'Rucher de la Clairière',
+        category: 'Forêt',
+        location: 'Lisière de forêt à Saint-Pardoux',
+        altitude: '420 m',
+        flora: 'Tilleul, aubépine, ronciers, chênes',
+        objectives: 'Produire un miel clair de miellée de tilleul et suivre les essaims tardifs.',
+        notes: 'Zone mi-ombragée, prévoir abreuvement artificiel en été.',
+    },
+]
 
 export const hives = [
     {
         id: 'hive-1',
+        apiaryId: 'apiary-1',
         name: 'Ruche Tournesol',
         status: 'active',
         population: 'Forte',
@@ -19,6 +34,7 @@ export const hives = [
     },
     {
         id: 'hive-2',
+        apiaryId: 'apiary-1',
         name: 'Ruche Lavande',
         status: 'active',
         population: 'Moyenne',
@@ -28,6 +44,7 @@ export const hives = [
     },
     {
         id: 'hive-3',
+        apiaryId: 'apiary-2',
         name: 'Ruche Acacia',
         status: 'active',
         population: 'Forte',
@@ -37,6 +54,7 @@ export const hives = [
     },
     {
         id: 'hive-4',
+        apiaryId: 'apiary-2',
         name: 'Ruche Châtaigner',
         status: 'monitor',
         population: 'À surveiller',
@@ -49,6 +67,7 @@ export const hives = [
 export const visits = [
     {
         id: 'visit-1',
+        apiaryId: 'apiary-1',
         hiveId: 'hive-1',
         date: '2024-03-15',
         weight: 32,
@@ -58,6 +77,7 @@ export const visits = [
     },
     {
         id: 'visit-2',
+        apiaryId: 'apiary-1',
         hiveId: 'hive-2',
         date: '2024-03-22',
         weight: 29,
@@ -67,12 +87,38 @@ export const visits = [
     },
     {
         id: 'visit-3',
+        apiaryId: 'apiary-2',
         hiveId: 'hive-3',
         date: '2024-04-03',
         weight: 35,
         broodPattern: 'Très compact',
         weather: 'Clair',
         notes: 'Population dense, vigilance essaimage.',
+    },
+]
+
+export const harvests = [
+    {
+        id: 'harvest-1',
+        apiaryId: 'apiary-1',
+        hiveId: 'hive-1',
+        date: '2024-07-18',
+        honeyType: 'Montagne',
+        lot: 'LOT-0724-A',
+        quantityKg: 18,
+        humidity: 17.4,
+        notes: 'Filtration lente, miel ambré.',
+    },
+    {
+        id: 'harvest-2',
+        apiaryId: 'apiary-2',
+        hiveId: 'hive-4',
+        date: '2024-08-02',
+        honeyType: 'Forêt',
+        lot: 'LOT-0802-F',
+        quantityKg: 12,
+        humidity: 16.8,
+        notes: 'Belle rondeur aromatique, à maturer 48h.',
     },
 ]
 

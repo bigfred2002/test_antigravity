@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useBeeData } from '../context/BeeDataContext'
 
 const initialForm = {
     date: '',
+    apiaryId: '',
     hiveId: '',
     weight: '',
     colonyStrength: 'Moyenne',
@@ -15,16 +16,30 @@ const initialForm = {
 }
 
 const VisitEntry = () => {
-    const { hives, addVisit, status, error, resetStatus } = useBeeData()
+    const { apiaries, hives, addVisit, status, error, resetStatus } = useBeeData()
     const [form, setForm] = useState(initialForm)
     const [formError, setFormError] = useState({})
     const [submitted, setSubmitted] = useState(false)
 
-    const hiveOptions = useMemo(() => hives.map((hive) => ({ value: hive.id, label: hive.name })), [hives])
+    const apiaryOptions = useMemo(() => apiaries.map((apiary) => ({ value: apiary.id, label: apiary.name })), [apiaries])
+
+    const hiveOptions = useMemo(() => {
+        if (!form.apiaryId) return []
+        return hives
+            .filter((hive) => hive.apiaryId === form.apiaryId)
+            .map((hive) => ({ value: hive.id, label: hive.name }))
+    }, [form.apiaryId, hives])
+
+    useEffect(() => {
+        if (!form.apiaryId && apiaryOptions.length > 0) {
+            setForm((prev) => ({ ...prev, apiaryId: apiaryOptions[0].value }))
+        }
+    }, [apiaryOptions, form.apiaryId])
 
     const validate = () => {
         const nextErrors = {}
         if (!form.date) nextErrors.date = 'Sélectionnez une date.'
+        if (!form.apiaryId) nextErrors.apiaryId = 'Choisissez le rucher.'
         if (!form.hiveId) nextErrors.hiveId = 'Choisissez une ruche.'
         if (!form.weight) nextErrors.weight = 'Indiquez le poids.'
         if (form.weight && Number.isNaN(Number(form.weight))) nextErrors.weight = 'Le poids doit être numérique.'
@@ -35,7 +50,11 @@ const VisitEntry = () => {
 
     const handleChange = (event) => {
         const { name, value } = event.target
-        setForm((prev) => ({ ...prev, [name]: value }))
+        setForm((prev) => ({
+            ...prev,
+            [name]: value,
+            ...(name === 'apiaryId' ? { hiveId: '' } : null),
+        }))
         if (formError[name]) {
             setFormError((prev) => ({ ...prev, [name]: undefined }))
         }
@@ -107,6 +126,30 @@ const VisitEntry = () => {
                         {formError.date && (
                             <p id="date-error" className="error-text">
                                 {formError.date}
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="apiaryId">Rucher *</label>
+                        <select
+                            id="apiaryId"
+                            name="apiaryId"
+                            value={form.apiaryId}
+                            onChange={handleChange}
+                            aria-invalid={Boolean(formError.apiaryId)}
+                            aria-describedby={formError.apiaryId ? 'apiary-error' : undefined}
+                        >
+                            <option value="">Sélectionner</option>
+                            {apiaryOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                        {formError.apiaryId && (
+                            <p id="apiary-error" className="error-text">
+                                {formError.apiaryId}
                             </p>
                         )}
                     </div>

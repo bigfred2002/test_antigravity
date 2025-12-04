@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useBeeData } from '../context/BeeDataContext'
 
 const emptyHive = {
+    apiaryId: '',
     name: '',
     type: 'Dadant 10 cadres',
     queenYear: new Date().getFullYear(),
@@ -16,9 +17,18 @@ const statusLabels = {
 }
 
 const HiveDefinition = () => {
-    const { hives, addHive } = useBeeData()
-    const [form, setForm] = useState(emptyHive)
+    const { apiaries, hives, addHive, updateHive } = useBeeData()
+    const [form, setForm] = useState({ ...emptyHive, apiaryId: apiaries[0]?.id || '' })
     const [feedback, setFeedback] = useState('')
+
+    const groupedHives = useMemo(() => {
+        return apiaries
+            .map((apiary) => ({
+                apiary,
+                hives: hives.filter((hive) => hive.apiaryId === apiary.id),
+            }))
+            .filter((group) => group.hives.length > 0)
+    }, [apiaries, hives])
 
     const handleChange = (event) => {
         const { name, value } = event.target
@@ -30,7 +40,12 @@ const HiveDefinition = () => {
         if (!form.name) return
         addHive({ ...form, status: 'active' })
         setFeedback('Ruche ajoutée à la liste.')
-        setForm(emptyHive)
+        setForm({ ...emptyHive, apiaryId: apiaries[0]?.id || '' })
+    }
+
+    const handleHiveUpdate = (id, field, value) => {
+        updateHive(id, { [field]: value })
+        setFeedback('Ruche mise à jour.')
     }
 
     return (
@@ -49,6 +64,16 @@ const HiveDefinition = () => {
             <section className="panel">
                 <form className="definition-form" onSubmit={handleSubmit}>
                     <div className="form-grid">
+                        <div className="form-group">
+                            <label htmlFor="apiaryId">Rucher *</label>
+                            <select id="apiaryId" name="apiaryId" value={form.apiaryId} onChange={handleChange} required>
+                                {apiaries.map((apiary) => (
+                                    <option key={apiary.id} value={apiary.id}>
+                                        {apiary.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                         <div className="form-group">
                             <label htmlFor="name">Nom de la ruche *</label>
                             <input id="name" name="name" type="text" value={form.name} onChange={handleChange} required />
@@ -115,30 +140,67 @@ const HiveDefinition = () => {
                     </div>
                     <p className="panel-caption">Une vue rapide pour préparer vos visites et répartir le matériel.</p>
                 </div>
-                <div className="hive-grid">
-                    {hives.map((hive) => (
-                        <article key={hive.id} className={`hive-card ${hive.status}`} aria-label={hive.name}>
-                            <div className="hive-card__header">
-                                <div>
-                                    <p className="eyebrow">{statusLabels[hive.status] || 'Active'}</p>
-                                    <h4>{hive.name}</h4>
-                                </div>
-                                <span className="pill">{hive.population}</span>
+                {groupedHives.map((group) => (
+                    <div key={group.apiary.id} className="hive-category">
+                        <div className="panel-header">
+                            <div>
+                                <p className="eyebrow">{group.apiary.category}</p>
+                                <h4>{group.apiary.name}</h4>
                             </div>
-                            <div className="hive-card__body">
-                                <p>
-                                    <strong>Format :</strong> {hive.type}
-                                </p>
-                                <p>
-                                    <strong>Reine :</strong> {hive.queenYear}
-                                </p>
-                                <p>
-                                    <strong>Origine :</strong> {hive.origin}
-                                </p>
-                            </div>
-                        </article>
-                    ))}
-                </div>
+                            <p className="panel-caption">{group.apiary.location}</p>
+                        </div>
+                        <div className="hive-grid">
+                            {group.hives.map((hive) => (
+                                <article key={hive.id} className={`hive-card ${hive.status}`} aria-label={hive.name}>
+                                    <div className="hive-card__header">
+                                        <div>
+                                            <p className="eyebrow">{statusLabels[hive.status] || 'Active'}</p>
+                                            <h4>{hive.name}</h4>
+                                        </div>
+                                        <span className="pill">{hive.population}</span>
+                                    </div>
+                                    <div className="hive-card__body">
+                                        <p>
+                                            <strong>Format :</strong> {hive.type}
+                                        </p>
+                                        <p>
+                                            <strong>Reine :</strong> {hive.queenYear}
+                                        </p>
+                                        <p>
+                                            <strong>Origine :</strong> {hive.origin}
+                                        </p>
+                                        <div className="form-grid compact-grid">
+                                            <div className="form-group">
+                                                <label htmlFor={`status-${hive.id}`}>Statut</label>
+                                                <select
+                                                    id={`status-${hive.id}`}
+                                                    value={hive.status}
+                                                    onChange={(event) => handleHiveUpdate(hive.id, 'status', event.target.value)}
+                                                >
+                                                    <option value="active">Active</option>
+                                                    <option value="monitor">À surveiller</option>
+                                                    <option value="archived">Archivée</option>
+                                                </select>
+                                            </div>
+                                            <div className="form-group">
+                                                <label htmlFor={`population-${hive.id}`}>Population</label>
+                                                <select
+                                                    id={`population-${hive.id}`}
+                                                    value={hive.population}
+                                                    onChange={(event) => handleHiveUpdate(hive.id, 'population', event.target.value)}
+                                                >
+                                                    <option>Forte</option>
+                                                    <option>Moyenne</option>
+                                                    <option>À surveiller</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    </div>
+                ))}
             </section>
         </div>
     )
