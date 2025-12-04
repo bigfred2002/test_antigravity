@@ -22,10 +22,13 @@
   },
   "homepage": "https://github.com/bigfred2002/test_antigravity#readme",
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "lucide-react": "^0.555.0",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
-    "react-router-dom": "^7.10.0"
+    "react-hook-form": "^7.68.0",
+    "react-router-dom": "^7.10.0",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.1.1",
