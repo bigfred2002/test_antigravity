@@ -13,13 +13,13 @@ Remplacez les URLs par vos sources. Les noms de fichiers correspondent aux visue
 # Créer le dossier s’il n’existe pas
 mkdir -p public/images
 
-# Télécharger les illustrations
-curl -L "https://exemple.com/assets/auth-illustration.jpg" -o public/images/auth-illustration.jpg
-curl -L "https://exemple.com/assets/hero.jpg" -o public/images/hero.jpg
-curl -L "https://exemple.com/assets/highlight-flow.jpg" -o public/images/highlight-flow.jpg
-curl -L "https://exemple.com/assets/highlight-honey.jpg" -o public/images/highlight-honey.jpg
-curl -L "https://exemple.com/assets/highlight-visit.jpg" -o public/images/highlight-visit.jpg
-curl -L "https://exemple.com/assets/honey-banner.jpg" -o public/images/honey-banner.jpg
+# Télécharger les illustrations (sources libres Unsplash)
+curl -L "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80" -o public/images/auth-illustration.jpg
+curl -L "https://images.unsplash.com/photo-1522755967827-0d85e1d93c74?auto=format&fit=crop&w=1400&q=80" -o public/images/hero.jpg
+curl -L "https://images.unsplash.com/photo-1464660756002-dd9f9a92b01c?auto=format&fit=crop&w=1200&q=80" -o public/images/highlight-flow.jpg
+curl -L "https://images.unsplash.com/photo-1515162305281-743ed8aef5cc?auto=format&fit=crop&w=1200&q=80" -o public/images/highlight-honey.jpg
+curl -L "https://images.unsplash.com/photo-1441123100240-f9f3f77ed41b?auto=format&fit=crop&w=1200&q=80" -o public/images/highlight-visit.jpg
+curl -L "https://images.unsplash.com/photo-1508175769321-41a6d7acd1f6?auto=format&fit=crop&w=1400&q=80" -o public/images/honey-banner.jpg
 ```
 
 ## Variante : téléchargement en bloc via un manifest
@@ -28,12 +28,12 @@ Si vous disposez d’un manifest JSON listant les images à rapatrier, créez un
 ```bash
 cat > /tmp/images.json <<'JSON'
 [
-  {"url": "https://exemple.com/assets/auth-illustration.jpg", "output": "public/images/auth-illustration.jpg"},
-  {"url": "https://exemple.com/assets/hero.jpg", "output": "public/images/hero.jpg"},
-  {"url": "https://exemple.com/assets/highlight-flow.jpg", "output": "public/images/highlight-flow.jpg"},
-  {"url": "https://exemple.com/assets/highlight-honey.jpg", "output": "public/images/highlight-honey.jpg"},
-  {"url": "https://exemple.com/assets/highlight-visit.jpg", "output": "public/images/highlight-visit.jpg"},
-  {"url": "https://exemple.com/assets/honey-banner.jpg", "output": "public/images/honey-banner.jpg"}
+  {"url": "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80", "output": "public/images/auth-illustration.jpg"},
+  {"url": "https://images.unsplash.com/photo-1522755967827-0d85e1d93c74?auto=format&fit=crop&w=1400&q=80", "output": "public/images/hero.jpg"},
+  {"url": "https://images.unsplash.com/photo-1464660756002-dd9f9a92b01c?auto=format&fit=crop&w=1200&q=80", "output": "public/images/highlight-flow.jpg"},
+  {"url": "https://images.unsplash.com/photo-1515162305281-743ed8aef5cc?auto=format&fit=crop&w=1200&q=80", "output": "public/images/highlight-honey.jpg"},
+  {"url": "https://images.unsplash.com/photo-1441123100240-f9f3f77ed41b?auto=format&fit=crop&w=1200&q=80", "output": "public/images/highlight-visit.jpg"},
+  {"url": "https://images.unsplash.com/photo-1508175769321-41a6d7acd1f6?auto=format&fit=crop&w=1400&q=80", "output": "public/images/honey-banner.jpg"}
 ]
 JSON
 
