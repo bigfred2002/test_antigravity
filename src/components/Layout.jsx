@@ -1,6 +1,18 @@
 import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Boxes, ClipboardList, Droplets, LayoutDashboard, MapPinned, Notebook, PackageOpen } from 'lucide-react';
+import { Outlet, Link, useLocation } from 'react-router-dom'
+import {
+    BookOpenCheck,
+    Boxes,
+    ClipboardList,
+    Droplets,
+    FolderCog,
+    HardDriveDownload,
+    LayoutDashboard,
+    MapPinned,
+    Notebook,
+    PackageOpen,
+    Wrench,
+} from 'lucide-react'
 
 const Layout = () => {
     const location = useLocation();
@@ -9,13 +21,57 @@ const Layout = () => {
 
     const titles = {
         '/': 'Tableau de bord',
-        '/visit': 'Nouvelle Visite',
+        '/visit': 'Visites',
         '/apiary': 'Fiche rucher',
         '/hives': 'Définition des ruches',
         '/harvest': 'Récoltes',
         '/inventory': 'Inventaire',
         '/records': 'Consultation',
-    };
+        '/equipment-entry': 'Saisie matériel',
+        '/equipment-edit': 'Modification matériel',
+        '/administration': 'Administration',
+        '/knowledge': 'Base de connaissance',
+    }
+
+    const menuSections = [
+        {
+            label: 'Accueil',
+            items: [
+                { to: '/', icon: LayoutDashboard, label: 'Tableau de bord' },
+                { to: '/records', icon: Notebook, label: 'Consultation' },
+            ],
+        },
+        {
+            label: 'Gestion du rucher',
+            items: [
+                { to: '/hives', icon: Boxes, label: 'Ruches' },
+                { to: '/apiary', icon: MapPinned, label: 'Rucher' },
+            ],
+        },
+        {
+            label: 'Vie du rucher',
+            items: [
+                { to: '/visit', icon: ClipboardList, label: 'Visites' },
+                { to: '/harvest', icon: Droplets, label: 'Récoltes' },
+            ],
+        },
+        {
+            label: 'Matériel apiculture',
+            items: [
+                { to: '/equipment-entry', icon: PackageOpen, label: 'Saisie' },
+                { to: '/equipment-edit', icon: Wrench, label: 'Modification' },
+                { to: '/inventory', icon: FolderCog, label: 'Inventaire' },
+            ],
+        },
+        {
+            label: 'Administration',
+            items: [{ to: '/administration', icon: HardDriveDownload, label: 'Sauvegardes & rapports' }],
+        },
+        {
+            label: 'Base de connaissance',
+            items: [{ to: '/knowledge', icon: BookOpenCheck, label: 'Contacts & docs' }],
+        },
+    ]
 
     return (
         <div className="layout">
@@ -24,62 +80,25 @@ const Layout = () => {
                     <h1>Ruche Expert</h1>
                 </div>
                 <nav>
-                    <Link
-                        to="/"
-                        className={`nav-item ${isActive('/') ? 'active' : ''}`}
-                        aria-current={isActive('/') ? 'page' : undefined}
-                    >
-                        <LayoutDashboard size={20} />
-                        <span>Tableau de bord</span>
-                    </Link>
-                    <Link
-                        to="/visit"
-                        className={`nav-item ${isActive('/visit') ? 'active' : ''}`}
-                        aria-current={isActive('/visit') ? 'page' : undefined}
-                    >
-                        <ClipboardList size={20} />
-                        <span>Saisie Visite</span>
-                    </Link>
-                    <Link
-                        to="/apiary"
-                        className={`nav-item ${isActive('/apiary') ? 'active' : ''}`}
-                        aria-current={isActive('/apiary') ? 'page' : undefined}
-                    >
-                        <MapPinned size={20} />
-                        <span>Définir le rucher</span>
-                    </Link>
-                    <Link
-                        to="/hives"
-                        className={`nav-item ${isActive('/hives') ? 'active' : ''}`}
-                        aria-current={isActive('/hives') ? 'page' : undefined}
-                    >
-                        <Boxes size={20} />
-                        <span>Ruches</span>
-                    </Link>
-                    <Link
-                        to="/harvest"
-                        className={`nav-item ${isActive('/harvest') ? 'active' : ''}`}
-                        aria-current={isActive('/harvest') ? 'page' : undefined}
-                    >
-                        <Droplets size={20} />
-                        <span>Récoltes</span>
-                    </Link>
-                    <Link
-                        to="/inventory"
-                        className={`nav-item ${isActive('/inventory') ? 'active' : ''}`}
-                        aria-current={isActive('/inventory') ? 'page' : undefined}
-                    >
-                        <PackageOpen size={20} />
-                        <span>Inventaire</span>
-                    </Link>
-                    <Link
-                        to="/records"
-                        className={`nav-item ${isActive('/records') ? 'active' : ''}`}
-                        aria-current={isActive('/records') ? 'page' : undefined}
-                    >
-                        <Notebook size={20} />
-                        <span>Consultation</span>
-                    </Link>
+                    {menuSections.map((section) => (
+                        <div key={section.label} className="nav-section">
+                            <p className="nav-label">{section.label}</p>
+                            {section.items.map((item) => {
+                                const Icon = item.icon
+                                return (
+                                    <Link
+                                        key={item.to}
+                                        to={item.to}
+                                        className={`nav-item ${isActive(item.to) ? 'active' : ''}`}
+                                        aria-current={isActive(item.to) ? 'page' : undefined}
+                                    >
+                                        <Icon size={20} />
+                                        <span>{item.label}</span>
+                                    </Link>
+                                )
+                            })}
+                        </div>
+                    ))}
                 </nav>
             </aside>
             <main className="content">

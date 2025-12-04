@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo, useState } from 'react'
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import {
     apiaries as initialApiaries,
     equipment as initialEquipment,
@@ -8,15 +8,49 @@ import {
 } from '../data/mockData'
 
 const BeeDataContext = createContext()
+const STORAGE_KEY = 'bee-data-store'
+
+const getPersistedData = () => {
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') return null
+
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY)
+        return raw ? JSON.parse(raw) : null
+    } catch (error) {
+        console.warn('Impossible de charger les données locales', error)
+        return null
+    }
+}
+
+const getWithFallback = (persisted, key, fallback) => {
+    if (!persisted) return fallback
+    const value = persisted[key]
+    return Array.isArray(value) ? value : fallback
+}
 
 export const BeeDataProvider = ({ children }) => {
-    const [apiaries, setApiaries] = useState(initialApiaries)
-    const [hiveList, setHiveList] = useState(initialHives)
-    const [visitList, setVisitList] = useState(initialVisits)
-    const [harvestList, setHarvestList] = useState(initialHarvests)
-    const [equipment, setEquipment] = useState(initialEquipment)
+    const persisted = getPersistedData()
+    const [apiaries, setApiaries] = useState(() => getWithFallback(persisted, 'apiaries', initialApiaries))
+    const [hiveList, setHiveList] = useState(() => getWithFallback(persisted, 'hives', initialHives))
+    const [visitList, setVisitList] = useState(() => getWithFallback(persisted, 'visits', initialVisits))
+    const [harvestList, setHarvestList] = useState(() => getWithFallback(persisted, 'harvests', initialHarvests))
+    const [equipment, setEquipment] = useState(() => getWithFallback(persisted, 'equipment', initialEquipment))
     const [status, setStatus] = useState('idle')
     const [error, setError] = useState(null)
+
+    useEffect(() => {
+        if (typeof window === 'undefined' || typeof localStorage === 'undefined') return
+
+        const payload = {
+            apiaries,
+            hives: hiveList,
+            visits: visitList,
+            harvests: harvestList,
+            equipment,
+        }
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
+    }, [apiaries, hiveList, visitList, harvestList, equipment])
 
     const addApiary = (payload) => {
         const newApiary = { id: `apiary-${Date.now()}`, ...payload }
@@ -108,6 +142,24 @@ export const BeeDataProvider = ({ children }) => {
         return { activeHives, visitsLast30Days, health, avgWeight, totalHarvestKg }
     }, [hiveList, visitList, harvestList])
 
+    const exportData = () => ({
+        apiaries,
+        hives: hiveList,
+        visits: visitList,
+        harvests: harvestList,
+        equipment,
+    })
+
+    const importData = (snapshot) => {
+        if (!snapshot) return
+
+        setApiaries(snapshot.apiaries ?? [])
+        setHiveList(snapshot.hives ?? [])
+        setVisitList(snapshot.visits ?? [])
+        setHarvestList(snapshot.harvests ?? [])
+        setEquipment(snapshot.equipment ?? [])
+    }
+
     const value = {
         apiaries,
         hives: hiveList,
@@ -129,6 +181,8 @@ export const BeeDataProvider = ({ children }) => {
         status,
         error,
         resetStatus: () => setStatus('idle'),
+        exportData,
+        importData,
     }
 
     return <BeeDataContext.Provider value={value}>{children}</BeeDataContext.Provider>

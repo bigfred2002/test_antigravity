@@ -7,6 +7,10 @@ import HiveDefinition from './pages/HiveDefinition'
 import HarvestEntry from './pages/HarvestEntry'
 import Inventory from './pages/Inventory'
 import Records from './pages/Records'
+import EquipmentEntry from './pages/EquipmentEntry'
+import EquipmentUpdate from './pages/EquipmentUpdate'
+import Administration from './pages/Administration'
+import KnowledgeBase from './pages/KnowledgeBase'
 import { BeeDataProvider } from './context/BeeDataContext'
 
 function App() {
@@ -22,6 +26,10 @@ function App() {
                             <Route path="harvest" element={<HarvestEntry />} />
                             <Route path="inventory" element={<Inventory />} />
                             <Route path="records" element={<Records />} />
+                            <Route path="equipment-entry" element={<EquipmentEntry />} />
+                            <Route path="equipment-edit" element={<EquipmentUpdate />} />
+                            <Route path="administration" element={<Administration />} />
+                            <Route path="knowledge" element={<KnowledgeBase />} />
                         </Route>
                     </Routes>
                 </Router>
