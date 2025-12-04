@@ -14,11 +14,19 @@ const Layout = () => {
                     <h1>Ruche Expert</h1>
                 </div>
                 <nav>
-                    <Link to="/" className={`nav-item ${isActive('/') ? 'active' : ''}`}>
+                    <Link
+                        to="/"
+                        className={`nav-item ${isActive('/') ? 'active' : ''}`}
+                        aria-current={isActive('/') ? 'page' : undefined}
+                    >
                         <LayoutDashboard size={20} />
                         <span>Tableau de bord</span>
                     </Link>
-                    <Link to="/visit" className={`nav-item ${isActive('/visit') ? 'active' : ''}`}>
+                    <Link
+                        to="/visit"
+                        className={`nav-item ${isActive('/visit') ? 'active' : ''}`}
+                        aria-current={isActive('/visit') ? 'page' : undefined}
+                    >
                         <ClipboardList size={20} />
                         <span>Saisie Visite</span>
                     </Link>

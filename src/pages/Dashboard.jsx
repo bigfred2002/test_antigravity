@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useBeeData } from '../context/BeeDataContext'
 
 const heroImage =
     'https://images.unsplash.com/photo-1498601761256-5c1d2dbeedcb?auto=format&fit=crop&w=1400&q=80'
@@ -44,6 +45,16 @@ const inspiration = [
 ]
 
 const Dashboard = () => {
+    const { metrics, visits, hives } = useBeeData()
+
+    const recentVisits = visits
+        .slice()
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 4)
+        .map((visit) => ({
+            ...visit,
+            hiveName: hives.find((hive) => hive.id === visit.hiveId)?.name || 'Ruche inconnue',
+        }))
     const { hives, visits, loading, error, fetchData } = useApiStore(
         (state) => ({
             hives: state.hives,
@@ -140,7 +151,7 @@ const Dashboard = () => {
                     <div className="stat-icon">🐝</div>
                     <div>
                         <h3>Ruches actives</h3>
-                        <p className="value">12</p>
+                        <p className="value">{metrics.activeHives}</p>
                         <p className="stat-caption">Butineuses observées cette semaine</p>
                     </div>
                 </div>
@@ -148,7 +159,7 @@ const Dashboard = () => {
                     <div className="stat-icon">🌿</div>
                     <div>
                         <h3>Visites ce mois</h3>
-                        <p className="value">5</p>
+                        <p className="value">{metrics.visitsLast30Days}</p>
                         <p className="stat-caption">Inspections planifiées et réalisées</p>
                     </div>
                 </div>
@@ -156,11 +167,37 @@ const Dashboard = () => {
                     <div className="stat-icon">🍯</div>
                     <div>
                         <h3>Santé globale</h3>
-                        <p className="value good">Bonne</p>
+                        <p className="value good">{metrics.health}</p>
                         <p className="stat-caption">Indice sur la vitalité des colonies</p>
                     </div>
                 </div>
             </div>
+
+            <section className="panel" aria-label="Synthèse rucher">
+                <div className="panel-header">
+                    <div>
+                        <p className="eyebrow">Suivi terrain</p>
+                        <h3>Tendance des visites</h3>
+                    </div>
+                    <p className="panel-caption">Masse moyenne : {metrics.avgWeight} kg sur les visites enregistrées.</p>
+                </div>
+                <div className="recent-visits">
+                    {recentVisits.map((visit) => (
+                        <article key={visit.id} className="visit-row" aria-label={`Visite du ${visit.date}`}>
+                            <div className="visit-meta">
+                                <p className="visit-date">{new Date(visit.date).toLocaleDateString('fr-FR')}</p>
+                                <p className="visit-hive">{visit.hiveName}</p>
+                            </div>
+                            <div className="visit-info">
+                                <span className="pill">Poids {visit.weight} kg</span>
+                                <span className="pill">{visit.weather}</span>
+                                <span className="pill">Couvain : {visit.broodPattern}</span>
+                            </div>
+                            <p className="visit-notes">{visit.notes}</p>
+                        </article>
+                    ))}
+                </div>
+            </section>
 
             <section className="highlight" aria-label="Moments forts apicoles">
                 <div className="section-header">
