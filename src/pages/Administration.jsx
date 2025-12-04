@@ -58,7 +58,7 @@ const Administration = () => {
                 const content = JSON.parse(loadEvent.target.result)
                 importData(content)
                 setFeedback('Données restaurées dans la base locale.')
-            } catch (error) {
+            } catch {
                 setFeedback('Fichier illisible, merci de vérifier son format JSON.')
             }
         }

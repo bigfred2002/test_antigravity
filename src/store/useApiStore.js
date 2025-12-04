@@ -38,7 +38,7 @@ const useApiStore = create((set, get) => ({
         try {
             const { hives, visits } = await fetchMockData();
             set({ hives, visits, loading: false });
-        } catch (error) {
+        } catch {
             set({ error: "Impossible de charger les données", loading: false });
         }
     },

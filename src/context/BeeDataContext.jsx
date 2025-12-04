@@ -165,7 +165,7 @@ export const BeeDataProvider = ({ children }) => {
             setVisitList((prev) => [...prev, newVisit])
             setStatus('success')
             return newVisit
-        } catch (err) {
+        } catch {
             setError('Impossible de sauvegarder la visite, réessayez.')
             setStatus('error')
             return null

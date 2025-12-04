@@ -3,7 +3,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import {
     BookOpen,
-    BookOpenCheck,
+
     Boxes,
     ClipboardList,
     ChevronDown,
@@ -220,8 +220,8 @@ const Layout = () => {
         (location.pathname.startsWith('/visits/')
             ? 'Fiche de visite'
             : location.pathname.startsWith('/harvest/')
-              ? 'Récoltes'
-              : 'Carnet apicole')
+                ? 'Récoltes'
+                : 'Carnet apicole')
 
     return (
         <div className="layout">
