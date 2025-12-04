@@ -9,9 +9,16 @@ const Login = () => {
     const redirectPath = location.state?.from || '/'
     const [loginIdentifier, setLoginIdentifier] = useState('apiculteur-demo')
     const [loginPassword, setLoginPassword] = useState('demo')
-    const [registerData, setRegisterData] = useState({ name: '', login: '', password: '' })
+    const [registerData, setRegisterData] = useState({ login: '', email: '', password: '' })
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
+    const [activeModal, setActiveModal] = useState(null)
+
+    const closeModals = () => {
+        setActiveModal(null)
+        setError('')
+        setMessage('')
+    }
 
     const handleLogin = (event) => {
         event.preventDefault()
@@ -21,6 +28,7 @@ const Login = () => {
             const user = login(loginIdentifier, loginPassword)
             setMessage(`Bienvenue ${user.name}`)
             navigate(redirectPath)
+            closeModals()
         } catch (err) {
             setError(err.message)
         }
@@ -33,8 +41,9 @@ const Login = () => {
         try {
             const newUser = register(registerData)
             setMessage(`Compte créé pour ${newUser.name}`)
-            setRegisterData({ name: '', login: '', password: '' })
+            setRegisterData({ login: '', email: '', password: '' })
             navigate('/')
+            closeModals()
         } catch (err) {
             setError(err.message)
         }
@@ -48,6 +57,7 @@ const Login = () => {
         try {
             login('apiculteur-demo', 'demo')
             navigate('/')
+            closeModals()
         } catch (err) {
             setError(err.message)
             setMessage('')
@@ -62,6 +72,7 @@ const Login = () => {
         try {
             login('admin', 'admin')
             navigate('/')
+            closeModals()
         } catch (err) {
             setError(err.message)
             setMessage('')
@@ -96,79 +107,34 @@ const Login = () => {
                 </div>
 
                 <div className="auth-grid">
-                    <form className="auth-card" onSubmit={handleLogin}>
+                    <div className="auth-card auth-card--option">
                         <div className="auth-card__header">
                             <h3>Se connecter</h3>
+                            <p className="muted small">Utilisez votre identifiant (20 caractères max.) et votre mot de passe.</p>
+                        </div>
+                        <div className="pill-row">
                             <button type="button" className="pill" onClick={connectDemo}>
-                                Utiliser le compte démo
+                                Compte démo
                             </button>
                             <button type="button" className="pill" onClick={connectAdmin}>
-                                Utiliser le compte admin
+                                Compte admin
                             </button>
                         </div>
-                        <label className="form-field">
-                            <span>Nom ou identifiant</span>
-                            <input
-                                type="text"
-                                value={loginIdentifier}
-                                onChange={(e) => setLoginIdentifier(e.target.value)}
-                                required
-                                placeholder="Saisissez votre nom ou identifiant"
-                            />
-                        </label>
-                        <p className="muted small">Connexion possible avec le nom d’utilisateur ou l’identifiant.</p>
-                        <label className="form-field">
-                            <span>Mot de passe</span>
-                            <input
-                                type="password"
-                                value={loginPassword}
-                                onChange={(e) => setLoginPassword(e.target.value)}
-                                required
-                                placeholder="••••••••"
-                            />
-                        </label>
-                        <button type="submit" className="btn-primary">
-                            Connexion
+                        <button type="button" className="btn-primary" onClick={() => setActiveModal('login')}>
+                            Ouvrir la fenêtre de connexion
                         </button>
-                    </form>
+                    </div>
 
-                    <form className="auth-card" onSubmit={handleRegister}>
-                        <h3>Créer un compte apiculteur</h3>
-                        <label className="form-field">
-                            <span>Nom complet</span>
-                            <input
-                                type="text"
-                                value={registerData.name}
-                                onChange={(e) => setRegisterData((prev) => ({ ...prev, name: e.target.value }))}
-                                required
-                                placeholder="Ex : Rucher des Coteaux"
-                            />
-                        </label>
-                        <label className="form-field">
-                            <span>Identifiant</span>
-                            <input
-                                type="text"
-                                value={registerData.login}
-                                onChange={(e) => setRegisterData((prev) => ({ ...prev, login: e.target.value }))}
-                                required
-                                placeholder="Choisissez votre identifiant"
-                            />
-                        </label>
-                        <label className="form-field">
-                            <span>Mot de passe</span>
-                            <input
-                                type="password"
-                                value={registerData.password}
-                                onChange={(e) => setRegisterData((prev) => ({ ...prev, password: e.target.value }))}
-                                required
-                                minLength={4}
-                                placeholder="Choisissez un code"
-                            />
-                        </label>
-                        <button type="submit" className="btn-ghost">
-                            Créer et se connecter
+                    <div className="auth-card auth-card--option">
+                        <div className="auth-card__header">
+                            <h3>Créer un compte</h3>
+                            <p className="muted small">Renseignez un identifiant, un email et un mot de passe.</p>
+                        </div>
+                        <p className="muted small">Le compte admin reste disponible pour gérer les utilisateurs.</p>
+                        <button type="button" className="btn-ghost" onClick={() => setActiveModal('register')}>
+                            Ouvrir la fenêtre de création
                         </button>
-                    </form>
+                    </div>
                 </div>
 
                 {(error || message) && (
@@ -188,7 +154,7 @@ const Login = () => {
                             <div className="pill-row">
                                 {users.map((user) => (
                                     <span className="pill" key={user.id}>
-                                        {user.name} {user.id === demoUserId ? '(démo)' : ''}
+                                        {user.name} {user.id === demoUserId ? '(démo)' : ''} {user.id === 'admin' ? '(admin)' : ''}
                                     </span>
                                 ))}
                             </div>
@@ -198,6 +164,106 @@ const Login = () => {
                         Retour à l’accueil
                     </Link>
                 </div>
+
+                {activeModal === 'login' && (
+                    <div className="modal-overlay" role="dialog" aria-modal="true">
+                        <div className="modal">
+                            <div className="modal-header">
+                                <h3>Connexion</h3>
+                                <button type="button" className="icon-button" onClick={closeModals} aria-label="Fermer">
+                                    ×
+                                </button>
+                            </div>
+                            <form className="modal-body" onSubmit={handleLogin}>
+                                <label className="form-field">
+                                    <span>Identifiant</span>
+                                    <input
+                                        type="text"
+                                        value={loginIdentifier}
+                                        onChange={(e) => setLoginIdentifier(e.target.value)}
+                                        required
+                                        placeholder="Ex : apiculteur-demo"
+                                        maxLength={20}
+                                    />
+                                </label>
+                                <label className="form-field">
+                                    <span>Mot de passe</span>
+                                    <input
+                                        type="password"
+                                        value={loginPassword}
+                                        onChange={(e) => setLoginPassword(e.target.value)}
+                                        required
+                                        placeholder="••••••••"
+                                    />
+                                </label>
+                                <div className="pill-row">
+                                    <button type="button" className="pill" onClick={connectDemo}>
+                                        Préremplir le compte démo
+                                    </button>
+                                    <button type="button" className="pill" onClick={connectAdmin}>
+                                        Préremplir le compte admin
+                                    </button>
+                                </div>
+                                <button type="submit" className="btn-primary">
+                                    Se connecter
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                )}
+
+                {activeModal === 'register' && (
+                    <div className="modal-overlay" role="dialog" aria-modal="true">
+                        <div className="modal">
+                            <div className="modal-header">
+                                <h3>Créer un compte</h3>
+                                <button type="button" className="icon-button" onClick={closeModals} aria-label="Fermer">
+                                    ×
+                                </button>
+                            </div>
+                            <form className="modal-body" onSubmit={handleRegister}>
+                                <label className="form-field">
+                                    <span>Identifiant</span>
+                                    <input
+                                        type="text"
+                                        value={registerData.login}
+                                        onChange={(e) => setRegisterData((prev) => ({ ...prev, login: e.target.value }))}
+                                        required
+                                        placeholder="Choisissez votre identifiant"
+                                        maxLength={20}
+                                    />
+                                </label>
+                                <label className="form-field">
+                                    <span>Email</span>
+                                    <input
+                                        type="email"
+                                        value={registerData.email}
+                                        onChange={(e) => setRegisterData((prev) => ({ ...prev, email: e.target.value }))}
+                                        required
+                                        placeholder="vous@exemple.com"
+                                    />
+                                </label>
+                                <label className="form-field">
+                                    <span>Mot de passe</span>
+                                    <input
+                                        type="password"
+                                        value={registerData.password}
+                                        onChange={(e) => setRegisterData((prev) => ({ ...prev, password: e.target.value }))}
+                                        required
+                                        minLength={4}
+                                        placeholder="Choisissez un code"
+                                    />
+                                </label>
+                                <p className="muted small">
+                                    Le compte admin reste disponible pour gérer les utilisateurs déjà présents.
+                                </p>
+                                <button type="submit" className="btn-primary">
+                                    Créer et se connecter
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )
