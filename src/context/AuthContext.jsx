@@ -70,7 +70,12 @@ export const AuthProvider = ({ children }) => {
     }, [users, currentUserId])
 
     const login = (loginIdentifier, password) => {
-        const user = users.find((u) => u.login?.toLowerCase() === loginIdentifier.toLowerCase())
+        const normalizedIdentifier = loginIdentifier.trim().toLowerCase()
+        const user = users.find(
+            (candidate) =>
+                candidate.login?.toLowerCase() === normalizedIdentifier ||
+                candidate.name?.toLowerCase() === normalizedIdentifier,
+        )
         if (!user || user.password !== password) {
             throw new Error('Identifiants incorrects')
         }
