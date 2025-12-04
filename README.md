@@ -18,6 +18,10 @@ npm install
 # Récupérer les visuels localisés avant l'exécution
 # (voir docs/image_download_commands.md pour les commandes détaillées)
 # -> exécuter les commandes curl décrites dans le document
+
+## Jeu de données démo
+- Un export JSON prêt à l'emploi est disponible dans `public/demo-backup.json`.
+- Connectez-vous avec le compte démo (identifiant `apiculteur-demo`, mot de passe `demo`), ouvrez la page « Administration » puis importez le fichier pour préremplir toutes les sections (ruchers, ruches, visites, récoltes, inventaire, base de connaissance et mouvements).
 npm run dev
 ```
 L’interface est disponible par défaut sur http://localhost:5173.
