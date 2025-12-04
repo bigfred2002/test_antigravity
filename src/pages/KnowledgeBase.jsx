@@ -1,5 +1,5 @@
 import React from 'react'
-import { BookOpen, Download, ExternalLink, Phone } from 'lucide-react'
+import { BookOpen, Cloud, Download, ExternalLink, Phone } from 'lucide-react'
 import { useBeeData } from '../context/BeeDataContext'
 
 const KnowledgeBase = () => {
@@ -49,6 +49,25 @@ const KnowledgeBase = () => {
                                     </a>
                                 </li>
                             ))}
+                        </ul>
+                    </article>
+
+                    <article className="definition-card">
+                        <div className="card-header">
+                            <h4>Publier sur Render</h4>
+                            <Cloud size={18} />
+                        </div>
+                        <p className="muted">Prérequis pour déployer l’application sur la plateforme.</p>
+                        <ul className="muted">
+                            <li>L’application Node.js est versionnée dans un dépôt GitHub, GitLab ou Bitbucket.</li>
+                            <li>
+                                Le projet contient un <code>package.json</code> avec un script <code>start</code> qui lance le
+                                serveur (exemple : <code>"start": "node server.js"</code>).
+                            </li>
+                            <li>
+                                Le serveur écoute le port fourni par la variable d’environnement <code>$PORT</code> injectée par
+                                Render.
+                            </li>
                         </ul>
                     </article>
 
