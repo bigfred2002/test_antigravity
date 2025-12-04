@@ -1,8 +1,49 @@
+export const apiary = {
+    name: 'Rucher des Trois Vallées',
+    location: 'Plateau de Millevaches, Corrèze',
+    altitude: '650 m',
+    flora: 'Bruyère, acacia, châtaignier, prairies fleuries',
+    objectives: 'Maintenir des colonies douces et productives sur trois sites complémentaires.',
+    notes: 'Rucher ventilé, accessible en 4x4, orientation sud-est pour capter le soleil tôt.',
+}
+
 export const hives = [
-    { id: 'hive-1', name: 'Ruche Tournesol', status: 'active', population: 'Forte' },
-    { id: 'hive-2', name: 'Ruche Lavande', status: 'active', population: 'Moyenne' },
-    { id: 'hive-3', name: 'Ruche Acacia', status: 'active', population: 'Forte' },
-    { id: 'hive-4', name: 'Ruche Châtaigner', status: 'monitor', population: 'À surveiller' },
+    {
+        id: 'hive-1',
+        name: 'Ruche Tournesol',
+        status: 'active',
+        population: 'Forte',
+        type: 'Dadant 10 cadres',
+        queenYear: 2023,
+        origin: 'Division interne',
+    },
+    {
+        id: 'hive-2',
+        name: 'Ruche Lavande',
+        status: 'active',
+        population: 'Moyenne',
+        type: 'Dadant 10 cadres',
+        queenYear: 2022,
+        origin: 'Essaim sur cadre',
+    },
+    {
+        id: 'hive-3',
+        name: 'Ruche Acacia',
+        status: 'active',
+        population: 'Forte',
+        type: 'Warré',
+        queenYear: 2024,
+        origin: 'Essaim naturel',
+    },
+    {
+        id: 'hive-4',
+        name: 'Ruche Châtaigner',
+        status: 'monitor',
+        population: 'À surveiller',
+        type: 'Dadant 12 cadres',
+        queenYear: 2021,
+        origin: 'Transhumance',
+    },
 ]
 
 export const visits = [
@@ -32,5 +73,48 @@ export const visits = [
         broodPattern: 'Très compact',
         weather: 'Clair',
         notes: 'Population dense, vigilance essaimage.',
+    },
+]
+
+export const equipment = [
+    {
+        id: 'eq-frames',
+        name: 'Cadres cirés',
+        category: 'Rayons',
+        needed: 40,
+        inStock: 22,
+        note: 'Prévoir lissage des cires avant pose',
+    },
+    {
+        id: 'eq-supers',
+        name: 'Hausses complètes',
+        category: 'Hausses',
+        needed: 12,
+        inStock: 8,
+        note: 'En attente de livraison pour 4 pièces',
+    },
+    {
+        id: 'eq-feed',
+        name: 'Sirop 50/50',
+        category: 'Nourrissement',
+        needed: 30,
+        inStock: 18,
+        note: 'Reste deux bidons à entamer',
+    },
+    {
+        id: 'eq-treatment',
+        name: 'Traitement acide formique',
+        category: 'Traitement',
+        needed: 10,
+        inStock: 6,
+        note: 'Lot 2024 à utiliser en priorité',
+    },
+    {
+        id: 'eq-jars',
+        name: 'Pots de miel 500 g',
+        category: 'Conditionnement',
+        needed: 120,
+        inStock: 90,
+        note: 'Capsules dorées compatibles',
     },
 ]

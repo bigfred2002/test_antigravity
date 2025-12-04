@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useMemo, useState } from 'react'
-import { hives as initialHives, visits as initialVisits } from '../data/mockData'
+import { apiary as apiaryDefaults, equipment as initialEquipment, hives as initialHives, visits as initialVisits } from '../data/mockData'
 
 const BeeDataContext = createContext()
 
 export const BeeDataProvider = ({ children }) => {
     const [hiveList, setHiveList] = useState(initialHives)
     const [visitList, setVisitList] = useState(initialVisits)
+    const [apiary, setApiary] = useState(apiaryDefaults)
+    const [equipment, setEquipment] = useState(initialEquipment)
     const [status, setStatus] = useState('idle')
     const [error, setError] = useState(null)
 
@@ -22,6 +24,22 @@ export const BeeDataProvider = ({ children }) => {
             setStatus('error')
             return null
         }
+    }
+
+    const addHive = (payload) => {
+        const newHive = { id: `hive-${Date.now()}`, status: 'active', population: 'Moyenne', ...payload }
+        setHiveList((prev) => [...prev, newHive])
+        return newHive
+    }
+
+    const updateApiary = (updates) => {
+        setApiary((prev) => ({ ...prev, ...updates }))
+    }
+
+    const updateEquipmentStock = (id, delta) => {
+        setEquipment((prev) =>
+            prev.map((item) => (item.id === id ? { ...item, inStock: Math.max(0, item.inStock + delta) } : item)),
+        )
     }
 
     const metrics = useMemo(() => {
@@ -45,7 +63,12 @@ export const BeeDataProvider = ({ children }) => {
     const value = {
         hives: hiveList,
         visits: visitList,
+        apiary,
+        equipment,
         addVisit,
+        addHive,
+        updateApiary,
+        updateEquipmentStock,
         metrics,
         status,
         error,
