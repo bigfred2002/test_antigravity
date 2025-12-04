@@ -10,6 +10,17 @@ const demoUser = {
     email: 'demo@ruche.expert',
     password: 'demo',
     avatar: 'AD',
+    role: 'user',
+}
+
+const adminUser = {
+    id: 'admin',
+    name: 'Administrateur',
+    login: 'admin',
+    email: 'admin@ruche.expert',
+    password: 'admin',
+    avatar: 'A',
+    role: 'admin',
 }
 
 const loadPersistedAuth = () => {
@@ -25,12 +36,21 @@ const loadPersistedAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const persisted = loadPersistedAuth()
-    const [users, setUsers] = useState(() =>
-        (persisted?.users?.length ? persisted.users : [demoUser]).map((user) => ({
-            ...user,
-            login: user.login || user.name,
-        })),
-    )
+    const [users, setUsers] = useState(() => {
+        const initialUsers = persisted?.users?.length ? persisted.users : []
+        const byId = new Map()
+
+        ;[adminUser, demoUser, ...initialUsers].forEach((user) => {
+            const normalized = {
+                ...user,
+                login: user.login || user.name,
+                role: user.role || 'user',
+            }
+            byId.set(normalized.id, normalized)
+        })
+
+        return Array.from(byId.values())
+    })
     const [currentUserId, setCurrentUserId] = useState(() => persisted?.currentUserId || null)
 
     const currentUser = useMemo(
@@ -77,10 +97,32 @@ export const AuthProvider = ({ children }) => {
             .slice(0, 2)
             .toUpperCase()
 
-        const newUser = { id, name, login, password, avatar }
+        const newUser = { id, name, login, password, avatar, role: 'user' }
         setUsers((prev) => [...prev, newUser])
         setCurrentUserId(id)
         return newUser
+    }
+
+    const updateUserPassword = (userId, newPassword) => {
+        setUsers((prev) =>
+            prev.map((user) =>
+                user.id === userId
+                    ? {
+                          ...user,
+                          password: newPassword,
+                      }
+                    : user,
+            ),
+        )
+    }
+
+    const deleteUser = (userId) => {
+        const protectedIds = new Set([demoUser.id, adminUser.id])
+        if (protectedIds.has(userId)) return
+        setUsers((prev) => prev.filter((user) => user.id !== userId))
+        if (currentUserId === userId) {
+            setCurrentUserId(null)
+        }
     }
 
     const value = {
@@ -89,6 +131,8 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         register,
+        deleteUser,
+        updateUserPassword,
         demoUserId: demoUser.id,
     }
 

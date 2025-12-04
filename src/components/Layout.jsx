@@ -17,6 +17,7 @@ import {
     Notebook,
     Phone,
     PackageOpen,
+    Users,
     Scale,
     Wrench,
 } from 'lucide-react'
@@ -27,6 +28,8 @@ const Layout = () => {
     const { currentUser, logout } = useAuth()
     const [openSections, setOpenSections] = useState(() => new Set(['home', 'beeyard']))
     const [openGroups, setOpenGroups] = useState(() => new Set())
+
+    const isAdmin = currentUser?.role === 'admin'
 
     const isActive = (path) => location.pathname === path || location.pathname.startsWith(`${path}/`)
 
@@ -55,6 +58,7 @@ const Layout = () => {
         '/administration/knowledge/documents': 'Gestion des documents',
         '/administration/gallery': 'Gestion de la galerie',
         '/administration/knowledge': 'Mise à jour de la base de connaissance',
+        '/administration/users': 'Gestion des utilisateurs',
     }
 
     const menuSections = useMemo(
@@ -135,7 +139,10 @@ const Layout = () => {
                     {
                         key: 'admin-data',
                         label: 'Base de données',
-                        items: [{ to: '/administration', icon: HardDriveDownload, label: 'Sauvegardes & rapports' }],
+                        items: [
+                            { to: '/administration', icon: HardDriveDownload, label: 'Sauvegardes & rapports' },
+                            { to: '/administration/users', icon: Users, label: 'Gestion des utilisateurs' },
+                        ],
                     },
                     {
                         key: 'admin-knowledge',
@@ -151,6 +158,11 @@ const Layout = () => {
             },
         ],
         [],
+    )
+
+    const visibleSections = useMemo(
+        () => menuSections.filter((section) => (section.key === 'admin' ? isAdmin : true)),
+        [isAdmin, menuSections],
     )
 
     useEffect(() => {
@@ -218,7 +230,7 @@ const Layout = () => {
                     <h1>Ruche Expert</h1>
                 </div>
                 <nav>
-                    {menuSections.map((section) => (
+                    {visibleSections.map((section) => (
                         <div key={section.key} className="nav-section">
                             <button
                                 type="button"
@@ -284,7 +296,9 @@ const Layout = () => {
                         {currentUser && (
                             <>
                                 <div className="user-meta">
-                                    <p className="muted small">Compte apiculteur</p>
+                                    <p className="muted small">
+                                        {currentUser.role === 'admin' ? 'Compte administrateur' : 'Compte apiculteur'}
+                                    </p>
                                     <p className="user-name">{currentUser.name}</p>
                                 </div>
                                 <div className="avatar">{currentUser.avatar || 'AP'}</div>
