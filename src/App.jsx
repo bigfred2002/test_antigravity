@@ -2,8 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
 import VisitEntry from './pages/VisitEntry'
+import VisitHistory from './pages/VisitHistory'
 import ApiaryDefinition from './pages/ApiaryDefinition'
 import HiveDefinition from './pages/HiveDefinition'
+import HiveReview from './pages/HiveReview'
 import HarvestEntry from './pages/HarvestEntry'
 import Inventory from './pages/Inventory'
 import Records from './pages/Records'
@@ -11,6 +13,7 @@ import EquipmentEntry from './pages/EquipmentEntry'
 import EquipmentUpdate from './pages/EquipmentUpdate'
 import Administration from './pages/Administration'
 import KnowledgeBase from './pages/KnowledgeBase'
+import KnowledgeEditor from './pages/KnowledgeEditor'
 import { BeeDataProvider } from './context/BeeDataContext'
 
 function App() {
@@ -21,8 +24,10 @@ function App() {
                         <Route path="/" element={<Layout />}>
                             <Route index element={<Dashboard />} />
                             <Route path="visit" element={<VisitEntry />} />
+                            <Route path="visits" element={<VisitHistory />} />
                             <Route path="apiary" element={<ApiaryDefinition />} />
                             <Route path="hives" element={<HiveDefinition />} />
+                            <Route path="hives/review" element={<HiveReview />} />
                             <Route path="harvest" element={<HarvestEntry />} />
                             <Route path="inventory" element={<Inventory />} />
                             <Route path="records" element={<Records />} />
@@ -30,6 +35,7 @@ function App() {
                             <Route path="equipment-edit" element={<EquipmentUpdate />} />
                             <Route path="administration" element={<Administration />} />
                             <Route path="knowledge" element={<KnowledgeBase />} />
+                            <Route path="knowledge/edit" element={<KnowledgeEditor />} />
                         </Route>
                     </Routes>
                 </Router>

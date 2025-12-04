@@ -1,25 +1,10 @@
 import React from 'react'
 import { BookOpen, ExternalLink, Phone } from 'lucide-react'
-
-const resources = {
-    contacts: [
-        { name: 'Vétérinaire sanitaire', detail: 'Dr. L. Marchand — 06 45 22 10 98' },
-        { name: 'Fournisseur bois', detail: 'Menuiserie des Roches — 05 87 41 22 15' },
-        { name: 'Groupement apicole local', detail: 'Association Abeilles & Terroirs' },
-    ],
-    sites: [
-        { label: 'Guide des bonnes pratiques', url: 'https://agriculture.gouv.fr/apiculture' },
-        { label: 'Bulletin météo agricole', url: 'https://meteofrance.com' },
-        { label: 'Forum apiculteurs francophones', url: 'https://www.apiculture-france.com' },
-    ],
-    documents: [
-        'Procédure de nourrissement printemps',
-        'Check-list visite de production',
-        'Protocole de renouvellement des reines',
-    ],
-}
+import { useBeeData } from '../context/BeeDataContext'
 
 const KnowledgeBase = () => {
+    const { knowledge } = useBeeData()
+
     return (
         <div className="definition-page">
             <header className="panel-header">
@@ -41,7 +26,7 @@ const KnowledgeBase = () => {
                             <Phone size={18} />
                         </div>
                         <ul className="muted">
-                            {resources.contacts.map((contact) => (
+                            {knowledge.contacts.map((contact) => (
                                 <li key={contact.name}>
                                     <strong>{contact.name}</strong>
                                     <p>{contact.detail}</p>
@@ -56,7 +41,7 @@ const KnowledgeBase = () => {
                             <ExternalLink size={18} />
                         </div>
                         <ul className="muted">
-                            {resources.sites.map((site) => (
+                            {knowledge.sites.map((site) => (
                                 <li key={site.url}>
                                     <a href={site.url} target="_blank" rel="noreferrer" className="link">
                                         {site.label}
@@ -72,7 +57,7 @@ const KnowledgeBase = () => {
                             <BookOpen size={18} />
                         </div>
                         <ul className="muted">
-                            {resources.documents.map((doc) => (
+                            {knowledge.documents.map((doc) => (
                                 <li key={doc}>{doc}</li>
                             ))}
                         </ul>

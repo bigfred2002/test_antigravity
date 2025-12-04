@@ -22,8 +22,10 @@ const Layout = () => {
     const titles = {
         '/': 'Tableau de bord',
         '/visit': 'Visites',
+        '/visits': 'Suivi des visites',
         '/apiary': 'Fiche rucher',
         '/hives': 'Définition des ruches',
+        '/hives/review': 'Suivi des ruches',
         '/harvest': 'Récoltes',
         '/inventory': 'Inventaire',
         '/records': 'Consultation',
@@ -31,6 +33,7 @@ const Layout = () => {
         '/equipment-edit': 'Modification matériel',
         '/administration': 'Administration',
         '/knowledge': 'Base de connaissance',
+        '/knowledge/edit': 'Édition base de connaissance',
     }
 
     const menuSections = [
@@ -44,14 +47,16 @@ const Layout = () => {
         {
             label: 'Gestion du rucher',
             items: [
-                { to: '/hives', icon: Boxes, label: 'Ruches' },
+                { to: '/hives', icon: Boxes, label: 'Création ruches' },
+                { to: '/hives/review', icon: Wrench, label: 'Suivi ruches' },
                 { to: '/apiary', icon: MapPinned, label: 'Rucher' },
             ],
         },
         {
             label: 'Vie du rucher',
             items: [
-                { to: '/visit', icon: ClipboardList, label: 'Visites' },
+                { to: '/visit', icon: ClipboardList, label: 'Saisie visites' },
+                { to: '/visits', icon: Notebook, label: 'Suivi visites' },
                 { to: '/harvest', icon: Droplets, label: 'Récoltes' },
             ],
         },
@@ -69,7 +74,10 @@ const Layout = () => {
         },
         {
             label: 'Base de connaissance',
-            items: [{ to: '/knowledge', icon: BookOpenCheck, label: 'Contacts & docs' }],
+            items: [
+                { to: '/knowledge', icon: BookOpenCheck, label: 'Contacts & docs' },
+                { to: '/knowledge/edit', icon: ClipboardList, label: 'Mise à jour' },
+            ],
         },
     ]
 

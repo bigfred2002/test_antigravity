@@ -17,7 +17,7 @@ const statusLabels = {
 }
 
 const HiveDefinition = () => {
-    const { apiaries, hives, addHive, updateHive } = useBeeData()
+    const { apiaries, hives, addHive } = useBeeData()
     const [form, setForm] = useState({ ...emptyHive, apiaryId: apiaries[0]?.id || '' })
     const [feedback, setFeedback] = useState('')
 
@@ -41,11 +41,6 @@ const HiveDefinition = () => {
         addHive({ ...form, status: 'active' })
         setFeedback('Ruche ajoutée à la liste.')
         setForm({ ...emptyHive, apiaryId: apiaries[0]?.id || '' })
-    }
-
-    const handleHiveUpdate = (id, field, value) => {
-        updateHive(id, { [field]: value })
-        setFeedback('Ruche mise à jour.')
     }
 
     return (
@@ -169,32 +164,12 @@ const HiveDefinition = () => {
                                         <p>
                                             <strong>Origine :</strong> {hive.origin}
                                         </p>
-                                        <div className="form-grid compact-grid">
-                                            <div className="form-group">
-                                                <label htmlFor={`status-${hive.id}`}>Statut</label>
-                                                <select
-                                                    id={`status-${hive.id}`}
-                                                    value={hive.status}
-                                                    onChange={(event) => handleHiveUpdate(hive.id, 'status', event.target.value)}
-                                                >
-                                                    <option value="active">Active</option>
-                                                    <option value="monitor">À surveiller</option>
-                                                    <option value="archived">Archivée</option>
-                                                </select>
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor={`population-${hive.id}`}>Population</label>
-                                                <select
-                                                    id={`population-${hive.id}`}
-                                                    value={hive.population}
-                                                    onChange={(event) => handleHiveUpdate(hive.id, 'population', event.target.value)}
-                                                >
-                                                    <option>Forte</option>
-                                                    <option>Moyenne</option>
-                                                    <option>À surveiller</option>
-                                                </select>
-                                            </div>
-                                        </div>
+                                        <p>
+                                            <strong>Statut :</strong> {statusLabels[hive.status] || 'Active'}
+                                        </p>
+                                        <p>
+                                            <strong>Population :</strong> {hive.population}
+                                        </p>
                                     </div>
                                 </article>
                             ))}
