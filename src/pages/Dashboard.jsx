@@ -1,26 +1,45 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const heroImage =
-    'https://images.unsplash.com/photo-1502590464431-3b66d77494bc?auto=format&fit=crop&w=1200&q=80'
+    'https://images.unsplash.com/photo-1498601761256-5c1d2dbeedcb?auto=format&fit=crop&w=1400&q=80'
 
-const galleryItems = [
+const highlightCards = [
     {
-        title: 'Butinage en pleine floraison',
-        description: 'Des abeilles au travail sur des fleurs mellifères pour nourrir la colonie.',
+        title: 'Inspection de printemps',
+        description: 'Observer la reprise de ponte, vérifier la place disponible et ajuster l’aération.',
         image:
-            'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80',
+            'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=900&q=80',
+        tags: ['Reine vue', 'Cadres équilibrés', 'Réserves ok'],
     },
     {
-        title: 'Cadres et cire fraîche',
-        description: "Une ruche bien entretenue avec des cadres réguliers et une cire claire.",
+        title: 'Miellée en cours',
+        description: 'Surveiller le poids, poser ou retirer les hausses et suivre la floraison locale.',
         image:
-            'https://images.unsplash.com/photo-1459755486867-b55449bb39ff?auto=format&fit=crop&w=900&q=80',
+            'https://images.unsplash.com/photo-1504275107627-0c2ba7a43dba?auto=format&fit=crop&w=900&q=80',
+        tags: ['Balance', 'Hausses', 'Floraisons'],
     },
     {
-        title: 'Apiculteur en inspection',
-        description: "Visite guidée pour vérifier l'état du couvain et la présence de la reine.",
+        title: 'Douceur de miel',
+        description: 'Un miel clair et parfumé obtenu grâce à une récolte patiente et bien préparée.',
         image:
-            'https://images.unsplash.com/photo-1515164303-0f3297bb656f?auto=format&fit=crop&w=900&q=80',
+            'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=900&q=80',
+        tags: ['Récolte', 'Filtration', 'Maturation'],
+    },
+]
+
+const inspiration = [
+    {
+        title: 'Couleur du couvain',
+        text: 'Une teinte homogène et brillante signale un couvain sain.',
+    },
+    {
+        title: 'Vol calme à l’entrée',
+        text: 'Des abeilles régulières et non agressives indiquent une colonie apaisée.',
+    },
+    {
+        title: 'Réserves équilibrées',
+        text: 'Nectar, pollen et miel sont bien répartis sur les cadres extérieurs.',
     },
 ]
 
@@ -85,21 +104,34 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard">
-            <section className="hero-card" aria-label="Mise en avant apicole">
-                <div className="hero-content">
-                    <p className="eyebrow">Ruche Expert · Inspiration terrain</p>
-                    <h2>Prendre soin de chaque colonie</h2>
+            <section className="hero-panel" aria-label="Mise en avant apicole">
+                <div className="hero-text">
+                    <p className="eyebrow">Carnet de rucher · Saison en cours</p>
+                    <h2>Un tableau de bord prêt pour vos prochaines visites</h2>
                     <p className="hero-subtitle">
-                        Un cockpit visuel pour suivre la santé des ruches et célébrer le travail des abeilles.
+                        Suivez vos colonies, préparez les hausses et anticipez les floraisons clés grâce à un espace
+                        visuel et inspiré par l’apiculture.
                     </p>
-                    <div className="hero-tags">
-                        <span>Pollinisation</span>
-                        <span>Couvain</span>
-                        <span>Miellée</span>
+                    <div className="hero-actions">
+                        <Link className="btn-primary" to="/visit">
+                            Planifier une visite
+                        </Link>
+                        <button className="btn-ghost" type="button">
+                            Exporter mes notes
+                        </button>
+                    </div>
+                    <div className="hero-pill-row">
+                        <span className="pill">Pollinisation</span>
+                        <span className="pill">Couvain</span>
+                        <span className="pill">Miellée</span>
+                        <span className="pill">Traitements doux</span>
                     </div>
                 </div>
-                <div className="hero-visual" role="img" aria-label="Abeilles sur un cadre de ruche">
-                    <img src={heroImage} alt="Cadre de ruche avec abeilles" loading="lazy" />
+                <div className="hero-visual" role="img" aria-label="Cadre de ruche et abeilles au soleil">
+                    <div className="hero-image-wrap">
+                        <img src={heroImage} alt="Cadre de ruche et abeilles" loading="lazy" />
+                        <div className="hero-badge">Série printemps 2024</div>
+                    </div>
                 </div>
             </section>
 
@@ -107,7 +139,7 @@ const Dashboard = () => {
                 <div className="stat-card">
                     <div className="stat-icon">🐝</div>
                     <div>
-                        <h3>Ruches Actives</h3>
+                        <h3>Ruches actives</h3>
                         <p className="value">12</p>
                         <p className="stat-caption">Butineuses observées cette semaine</p>
                     </div>
@@ -123,33 +155,61 @@ const Dashboard = () => {
                 <div className="stat-card">
                     <div className="stat-icon">🍯</div>
                     <div>
-                        <h3>Santé Globale</h3>
+                        <h3>Santé globale</h3>
                         <p className="value good">Bonne</p>
                         <p className="stat-caption">Indice sur la vitalité des colonies</p>
                     </div>
                 </div>
             </div>
 
-            <section className="gallery" aria-label="Références visuelles apicoles">
+            <section className="highlight" aria-label="Moments forts apicoles">
                 <div className="section-header">
                     <div>
-                        <p className="eyebrow">Galerie</p>
-                        <h3>Des images qui racontent la ruche</h3>
+                        <p className="eyebrow">Galerie terrain</p>
+                        <h3>Des gestes inspirés par les ruchers</h3>
                     </div>
                     <p className="section-subtitle">
-                        Inspirez-vous des gestes apicoles et des moments clés à surveiller lors des inspections.
+                        Trois repères visuels pour ancrer vos inspections : ouverture, suivi de miellée et récolte.
                     </p>
                 </div>
-                <div className="gallery-grid">
-                    {galleryItems.map((item) => (
-                        <article className="gallery-card" key={item.title}>
-                            <div className="gallery-image">
+                <div className="highlight-grid">
+                    {highlightCards.map((item) => (
+                        <article className="highlight-card" key={item.title}>
+                            <div className="highlight-image">
                                 <img src={item.image} alt={item.title} loading="lazy" />
+                                <div className="image-chip">Ref apicole</div>
                             </div>
-                            <div className="gallery-body">
+                            <div className="highlight-body">
                                 <h4>{item.title}</h4>
                                 <p>{item.description}</p>
+                                <div className="pill-row">
+                                    {item.tags.map((tag) => (
+                                        <span className="pill" key={tag}>
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
+                        </article>
+                    ))}
+                </div>
+            </section>
+
+            <section className="inspiration" aria-label="Clés de lecture du rucher">
+                <div className="section-header">
+                    <div>
+                        <p className="eyebrow">Signes à surveiller</p>
+                        <h3>Les petits indices qui changent tout</h3>
+                    </div>
+                    <p className="section-subtitle">
+                        Des rappels courts pour mieux interpréter vos observations entre deux visites.
+                    </p>
+                </div>
+                <div className="inspiration-grid">
+                    {inspiration.map((item) => (
+                        <article className="inspiration-card" key={item.title}>
+                            <h4>{item.title}</h4>
+                            <p>{item.text}</p>
                         </article>
                     ))}
                 </div>
