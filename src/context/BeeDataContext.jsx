@@ -4,6 +4,7 @@ import {
     equipment as initialEquipment,
     harvests as initialHarvests,
     hives as initialHives,
+    knowledgeBase as initialKnowledge,
     visits as initialVisits,
 } from '../data/mockData'
 
@@ -25,7 +26,9 @@ const getPersistedData = () => {
 const getWithFallback = (persisted, key, fallback) => {
     if (!persisted) return fallback
     const value = persisted[key]
-    return Array.isArray(value) ? value : fallback
+    if (Array.isArray(fallback)) return Array.isArray(value) ? value : fallback
+    if (typeof fallback === 'object' && fallback !== null) return typeof value === 'object' && value ? value : fallback
+    return value ?? fallback
 }
 
 export const BeeDataProvider = ({ children }) => {
@@ -35,6 +38,8 @@ export const BeeDataProvider = ({ children }) => {
     const [visitList, setVisitList] = useState(() => getWithFallback(persisted, 'visits', initialVisits))
     const [harvestList, setHarvestList] = useState(() => getWithFallback(persisted, 'harvests', initialHarvests))
     const [equipment, setEquipment] = useState(() => getWithFallback(persisted, 'equipment', initialEquipment))
+    const [knowledge, setKnowledge] = useState(() => getWithFallback(persisted, 'knowledge', initialKnowledge))
+    const [movements, setMovements] = useState(() => getWithFallback(persisted, 'movements', []))
     const [status, setStatus] = useState('idle')
     const [error, setError] = useState(null)
 
@@ -47,6 +52,8 @@ export const BeeDataProvider = ({ children }) => {
             visits: visitList,
             harvests: harvestList,
             equipment,
+            knowledge,
+            movements,
         }
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
@@ -112,6 +119,12 @@ export const BeeDataProvider = ({ children }) => {
         return newEquipment
     }
 
+    const addMovement = (payload) => {
+        const newMovement = { id: `mov-${Date.now()}`, date: new Date().toISOString().slice(0, 10), ...payload }
+        setMovements((prev) => [newMovement, ...prev])
+        return newMovement
+    }
+
     const updateEquipmentStock = (id, delta) => {
         setEquipment((prev) =>
             prev.map((item) => (item.id === id ? { ...item, inStock: Math.max(0, item.inStock + delta) } : item)),
@@ -120,6 +133,13 @@ export const BeeDataProvider = ({ children }) => {
 
     const updateEquipment = (id, updates) => {
         setEquipment((prev) => prev.map((item) => (item.id === id ? { ...item, ...updates } : item)))
+    }
+
+    const updateKnowledge = (section, updater) => {
+        setKnowledge((prev) => {
+            const nextSection = typeof updater === 'function' ? updater(prev[section] || []) : updater
+            return { ...prev, [section]: nextSection }
+        })
     }
 
     const metrics = useMemo(() => {
@@ -148,6 +168,8 @@ export const BeeDataProvider = ({ children }) => {
         visits: visitList,
         harvests: harvestList,
         equipment,
+        knowledge,
+        movements,
     })
 
     const importData = (snapshot) => {
@@ -158,6 +180,8 @@ export const BeeDataProvider = ({ children }) => {
         setVisitList(snapshot.visits ?? [])
         setHarvestList(snapshot.harvests ?? [])
         setEquipment(snapshot.equipment ?? [])
+        setKnowledge(snapshot.knowledge ?? initialKnowledge)
+        setMovements(snapshot.movements ?? [])
     }
 
     const value = {
@@ -177,7 +201,11 @@ export const BeeDataProvider = ({ children }) => {
         addEquipment,
         updateEquipment,
         updateEquipmentStock,
+        movements,
+        addMovement,
         metrics,
+        knowledge,
+        updateKnowledge,
         status,
         error,
         resetStatus: () => setStatus('idle'),

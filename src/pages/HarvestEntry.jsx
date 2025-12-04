@@ -10,6 +10,8 @@ const emptyHarvest = {
     quantityKg: '',
     humidity: '',
     notes: '',
+    jarred: false,
+    jarNotes: '',
 }
 
 const HarvestEntry = () => {
@@ -45,6 +47,7 @@ const HarvestEntry = () => {
             ...form,
             quantityKg: Number(form.quantityKg),
             humidity: form.humidity ? Number(form.humidity) : undefined,
+            jarred: Boolean(form.jarred),
         })
         setFeedback('Récolte enregistrée')
         setForm(emptyHarvest)
@@ -137,6 +140,20 @@ const HarvestEntry = () => {
                                 onChange={handleChange}
                             />
                         </div>
+                        <div className="form-group">
+                            <label htmlFor="jarred">Mise en pots</label>
+                            <select
+                                id="jarred"
+                                name="jarred"
+                                value={form.jarred ? 'oui' : 'non'}
+                                onChange={(event) =>
+                                    setForm((prev) => ({ ...prev, jarred: event.target.value === 'oui' }))
+                                }
+                            >
+                                <option value="non">À planifier</option>
+                                <option value="oui">Réalisée</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div className="form-group">
@@ -147,6 +164,17 @@ const HarvestEntry = () => {
                             rows="3"
                             placeholder="Filtration, maturateur, observations..."
                             value={form.notes}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="jarNotes">Détails mise en pots</label>
+                        <textarea
+                            id="jarNotes"
+                            name="jarNotes"
+                            rows="2"
+                            placeholder="Nombre de pots, format, capsules, planning..."
+                            value={form.jarNotes}
                             onChange={handleChange}
                         />
                     </div>
@@ -183,6 +211,10 @@ const HarvestEntry = () => {
                                         <li key={item.id}>
                                             {new Date(item.date).toLocaleDateString('fr-FR')} · {apiary?.name} / {hive?.name} –
                                             {` ${item.quantityKg} kg`} ({item.lot || 'Lot à renseigner'})
+                                            <div className="muted">
+                                                Mise en pots : {item.jarred ? 'Réalisée' : 'À planifier'}
+                                                {item.jarNotes ? ` — ${item.jarNotes}` : ''}
+                                            </div>
                                         </li>
                                     )
                                 })}

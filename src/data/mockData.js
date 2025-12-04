@@ -129,6 +129,7 @@ export const equipment = [
         category: 'Rayons',
         needed: 40,
         inStock: 22,
+        price: 1.8,
         note: 'Prévoir lissage des cires avant pose',
     },
     {
@@ -137,6 +138,7 @@ export const equipment = [
         category: 'Hausses',
         needed: 12,
         inStock: 8,
+        price: 55,
         note: 'En attente de livraison pour 4 pièces',
     },
     {
@@ -145,6 +147,7 @@ export const equipment = [
         category: 'Nourrissement',
         needed: 30,
         inStock: 18,
+        price: 22,
         note: 'Reste deux bidons à entamer',
     },
     {
@@ -153,6 +156,7 @@ export const equipment = [
         category: 'Traitement',
         needed: 10,
         inStock: 6,
+        price: 6,
         note: 'Lot 2024 à utiliser en priorité',
     },
     {
@@ -161,6 +165,25 @@ export const equipment = [
         category: 'Conditionnement',
         needed: 120,
         inStock: 90,
+        price: 0.65,
         note: 'Capsules dorées compatibles',
     },
 ]
+
+export const knowledgeBase = {
+    contacts: [
+        { name: 'Vétérinaire sanitaire', detail: 'Dr. L. Marchand — 06 45 22 10 98' },
+        { name: 'Fournisseur bois', detail: 'Menuiserie des Roches — 05 87 41 22 15' },
+        { name: 'Groupement apicole local', detail: 'Association Abeilles & Terroirs' },
+    ],
+    sites: [
+        { label: 'Guide des bonnes pratiques', url: 'https://agriculture.gouv.fr/apiculture' },
+        { label: 'Bulletin météo agricole', url: 'https://meteofrance.com' },
+        { label: 'Forum apiculteurs francophones', url: 'https://www.apiculture-france.com' },
+    ],
+    documents: [
+        'Procédure de nourrissement printemps',
+        'Check-list visite de production',
+        'Protocole de renouvellement des reines',
+    ],
+}
