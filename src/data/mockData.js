@@ -122,6 +122,27 @@ export const harvests = [
     },
 ]
 
+export const movements = [
+    {
+        id: 'mov-1',
+        date: '2024-08-20',
+        lot: 'LOT-0724-A',
+        type: 'vente',
+        quantity: 4.5,
+        destination: 'Marché local',
+        notes: 'Pots de 500 g étiquetés',
+    },
+    {
+        id: 'mov-2',
+        date: '2024-08-28',
+        lot: 'LOT-0802-F',
+        type: 'don',
+        quantity: 2,
+        destination: 'AMAP',
+        notes: 'Soutien partenaires',
+    },
+]
+
 export const equipment = [
     {
         id: 'eq-frames',

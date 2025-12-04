@@ -6,6 +6,7 @@ import {
     harvests as initialHarvests,
     hives as initialHives,
     knowledgeBase as initialKnowledge,
+    movements as initialMovements,
     visits as initialVisits,
 } from '../data/mockData'
 
@@ -54,7 +55,7 @@ const seededData = {
     harvests: initialHarvests,
     equipment: initialEquipment,
     knowledge: normalizedInitialKnowledge,
-    movements: [],
+    movements: initialMovements,
 }
 
 const getStorageKey = (userId) => `${STORAGE_PREFIX}-${userId}`

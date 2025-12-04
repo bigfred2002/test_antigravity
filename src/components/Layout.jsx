@@ -17,6 +17,7 @@ import {
     Notebook,
     Phone,
     PackageOpen,
+    Scale,
     Wrench,
 } from 'lucide-react'
 
@@ -36,9 +37,11 @@ const Layout = () => {
         '/apiary': 'Fiche rucher',
         '/hives': 'Définition des ruches',
         '/hives/review': 'Suivi des ruches',
-        '/harvest': 'Récoltes',
+        '/harvest': 'Lots et mise en pots',
+        '/harvest/inventory': 'Inventaires miel',
+        '/harvest/movements': 'Mouvements de miel',
         '/inventory': 'Inventaire',
-        '/records': 'Consultation',
+        '/records': 'Résumé rucher',
         '/equipment-entry': 'Saisie matériel',
         '/equipment-edit': 'Modification matériel',
         '/administration': 'Administration',
@@ -61,7 +64,7 @@ const Layout = () => {
                 label: 'Accueil',
                 items: [
                     { to: '/', icon: LayoutDashboard, label: 'Tableau de bord' },
-                    { to: '/records', icon: Notebook, label: 'Consultation' },
+                    { to: '/records', icon: Notebook, label: 'Résumé rucher' },
                 ],
             },
             {
@@ -79,7 +82,11 @@ const Layout = () => {
                     {
                         key: 'harvests',
                         label: 'Récoltes',
-                        items: [{ to: '/harvest', icon: Droplets, label: 'Lots et mise en pots' }],
+                        items: [
+                            { to: '/harvest', icon: Droplets, label: 'Lots et mise en pots' },
+                            { to: '/harvest/inventory', icon: PackageOpen, label: 'Inventaires miel' },
+                            { to: '/harvest/movements', icon: Scale, label: 'Mouvements' },
+                        ],
                     },
                     {
                         key: 'apiary',
@@ -196,6 +203,14 @@ const Layout = () => {
         navigate('/login')
     }
 
+    const currentTitle =
+        titles[location.pathname] ||
+        (location.pathname.startsWith('/visits/')
+            ? 'Fiche de visite'
+            : location.pathname.startsWith('/harvest/')
+              ? 'Récoltes'
+              : 'Carnet apicole')
+
     return (
         <div className="layout">
             <aside className="sidebar">
@@ -264,7 +279,7 @@ const Layout = () => {
             </aside>
             <main className="content">
                 <header className="top-bar">
-                    <h2>{titles[location.pathname] || 'Carnet apicole'}</h2>
+                    <h2>{currentTitle}</h2>
                     <div className="user-profile" aria-label="Profil utilisateur">
                         {currentUser && (
                             <>

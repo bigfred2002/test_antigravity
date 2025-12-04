@@ -3,10 +3,13 @@ import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
 import VisitEntry from './pages/VisitEntry'
 import VisitHistory from './pages/VisitHistory'
+import VisitDetails from './pages/VisitDetails'
 import ApiaryDefinition from './pages/ApiaryDefinition'
 import HiveDefinition from './pages/HiveDefinition'
 import HiveReview from './pages/HiveReview'
 import HarvestEntry from './pages/HarvestEntry'
+import HoneyInventory from './pages/HoneyInventory'
+import HoneyMovements from './pages/HoneyMovements'
 import Inventory from './pages/Inventory'
 import Records from './pages/Records'
 import EquipmentEntry from './pages/EquipmentEntry'
@@ -35,15 +38,18 @@ function App() {
                     <Routes>
                         <Route path="/login" element={<Login />} />
                         <Route element={<RequireAuth />}>
-                            <Route path="/" element={<Layout />}>
-                                <Route index element={<Dashboard />} />
-                                <Route path="visit" element={<VisitEntry />} />
-                                <Route path="visits" element={<VisitHistory />} />
-                                <Route path="apiary" element={<ApiaryDefinition />} />
-                                <Route path="hives" element={<HiveDefinition />} />
-                                <Route path="hives/review" element={<HiveReview />} />
-                                <Route path="harvest" element={<HarvestEntry />} />
-                                <Route path="inventory" element={<Inventory />} />
+                                <Route path="/" element={<Layout />}>
+                                    <Route index element={<Dashboard />} />
+                                    <Route path="visit" element={<VisitEntry />} />
+                                    <Route path="visits" element={<VisitHistory />} />
+                                    <Route path="visits/:visitId" element={<VisitDetails />} />
+                                    <Route path="apiary" element={<ApiaryDefinition />} />
+                                    <Route path="hives" element={<HiveDefinition />} />
+                                    <Route path="hives/review" element={<HiveReview />} />
+                                    <Route path="harvest" element={<HarvestEntry />} />
+                                    <Route path="harvest/inventory" element={<HoneyInventory />} />
+                                    <Route path="harvest/movements" element={<HoneyMovements />} />
+                                    <Route path="inventory" element={<Inventory />} />
                                 <Route path="records" element={<Records />} />
                                 <Route path="equipment-entry" element={<EquipmentEntry />} />
                                 <Route path="equipment-edit" element={<EquipmentUpdate />} />
