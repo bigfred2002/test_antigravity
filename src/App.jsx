@@ -42,6 +42,7 @@ function App() {
                                 <Route path="administration" element={<Administration />} />
                                 <Route path="knowledge" element={<KnowledgeBase />} />
                                 <Route path="knowledge/edit" element={<KnowledgeEditor />} />
+                                <Route path="administration/knowledge" element={<KnowledgeEditor />} />
                             </Route>
                         </Route>
                     </Routes>

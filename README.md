@@ -5,15 +5,19 @@ Application Vite/React pour gérer un rucher : visites, colonies, récoltes, inv
 ## Fonctionnalités principales
 - **Visites** : saisie rapide et page dédiée au suivi/consultation pour filtrer et ajuster les inspections.
 - **Ruches** : création des colonies séparée d’une page de suivi pour les mises à jour terrain.
-- **Récoltes** : enregistrement des lots avec humidité et suivi de la mise en pots.
+- **Récoltes** : enregistrement des lots avec humidité, mise à jour d’un lot existant et suivi de la mise en pots.
 - **Inventaire** : ajout d’articles avec catégories préremplies ou personnalisées, prix, commentaires et tableau de stock.
 - **Mouvements** : journal des ventes/dons/prêts/destructions de matériel ou pots de miel.
-- **Base de connaissance** : consultation et page d’édition pour contacts, liens utiles et documents.
-- **Sauvegarde** : persistance locale (localStorage) et import/export via l’administration.
+- **Base de connaissance** : consultation et page d’édition sous l’administration pour contacts, liens utiles et documents importés/localisés.
+- **Sauvegarde** : persistance locale (localStorage) et import/export via l’administration, génération et téléchargement de rapports (visites, inventaires, récoltes).
+- **Navigation dynamique** : menu latéral repliable avec sous-menus « Visites », « Récoltes » et « Rucher » pour la vie du rucher.
 
 ## Démarrage
 ```bash
 npm install
+# Récupérer les visuels localisés avant l'exécution
+# (voir docs/image_download_commands.md pour les commandes détaillées)
+# -> exécuter les commandes curl décrites dans le document
 npm run dev
 ```
 L’interface est disponible par défaut sur http://localhost:5173.
@@ -27,4 +31,4 @@ L’interface est disponible par défaut sur http://localhost:5173.
 - `/harvest` : saisie des récoltes (avec mise en pots)
 - `/inventory` : gestion du stock et des mouvements
 - `/knowledge` : base de connaissance
-- `/knowledge/edit` : édition de la base de connaissance
+- `/knowledge/edit` et `/administration/knowledge` : édition de la base de connaissance

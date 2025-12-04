@@ -172,18 +172,36 @@ export const equipment = [
 
 export const knowledgeBase = {
     contacts: [
-        { name: 'Vétérinaire sanitaire', detail: 'Dr. L. Marchand — 06 45 22 10 98' },
-        { name: 'Fournisseur bois', detail: 'Menuiserie des Roches — 05 87 41 22 15' },
-        { name: 'Groupement apicole local', detail: 'Association Abeilles & Terroirs' },
+        { id: 'contact-1', name: 'Vétérinaire sanitaire', detail: 'Dr. L. Marchand — 06 45 22 10 98' },
+        { id: 'contact-2', name: 'Fournisseur bois', detail: 'Menuiserie des Roches — 05 87 41 22 15' },
+        { id: 'contact-3', name: 'Groupement apicole local', detail: 'Association Abeilles & Terroirs' },
     ],
     sites: [
-        { label: 'Guide des bonnes pratiques', url: 'https://agriculture.gouv.fr/apiculture' },
-        { label: 'Bulletin météo agricole', url: 'https://meteofrance.com' },
-        { label: 'Forum apiculteurs francophones', url: 'https://www.apiculture-france.com' },
+        { id: 'site-1', label: 'Guide des bonnes pratiques', url: 'https://agriculture.gouv.fr/apiculture' },
+        { id: 'site-2', label: 'Bulletin météo agricole', url: 'https://meteofrance.com' },
+        { id: 'site-3', label: 'Forum apiculteurs francophones', url: 'https://www.apiculture-france.com' },
     ],
     documents: [
-        'Procédure de nourrissement printemps',
-        'Check-list visite de production',
-        'Protocole de renouvellement des reines',
+        {
+            id: 'doc-1',
+            name: 'Procédure de nourrissement printemps',
+            url: '/documents/procedure-nourrissement.txt',
+            uploadedAt: '2024-02-15',
+            size: 226,
+        },
+        {
+            id: 'doc-2',
+            name: 'Check-list visite de production',
+            url: '/documents/checklist-visite.txt',
+            uploadedAt: '2024-03-02',
+            size: 186,
+        },
+        {
+            id: 'doc-3',
+            name: 'Protocole de renouvellement des reines',
+            url: '/documents/protocole-reines.txt',
+            uploadedAt: '2024-04-12',
+            size: 232,
+        },
     ],
 }

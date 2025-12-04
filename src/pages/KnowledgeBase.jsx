@@ -1,9 +1,10 @@
 import React from 'react'
-import { BookOpen, ExternalLink, Phone } from 'lucide-react'
+import { BookOpen, Download, ExternalLink, Phone } from 'lucide-react'
 import { useBeeData } from '../context/BeeDataContext'
 
 const KnowledgeBase = () => {
     const { knowledge } = useBeeData()
+    const documents = knowledge.documents || []
 
     return (
         <div className="definition-page">
@@ -56,10 +57,28 @@ const KnowledgeBase = () => {
                             <h4>Documents</h4>
                             <BookOpen size={18} />
                         </div>
-                        <ul className="muted">
-                            {knowledge.documents.map((doc) => (
-                                <li key={doc}>{doc}</li>
+                        <ul className="muted document-list">
+                            {documents.map((doc) => (
+                                <li key={doc.id} className="record-line">
+                                    <div>
+                                        <strong>{doc.name}</strong>
+                                        <p className="muted small">
+                                            Ajouté le {new Date(doc.uploadedAt).toLocaleDateString('fr-FR')}
+                                            {doc.size ? ` · ${Math.round(doc.size / 1024)} Ko` : ''}
+                                        </p>
+                                    </div>
+                                    <a
+                                        className="pill"
+                                        href={doc.dataUrl || doc.url}
+                                        download={doc.name}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        <Download size={16} /> Télécharger
+                                    </a>
+                                </li>
                             ))}
+                            {!documents.length && <li className="muted">Aucun document enregistré pour le moment.</li>}
                         </ul>
                     </article>
                 </div>

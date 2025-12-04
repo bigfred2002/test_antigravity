@@ -15,9 +15,10 @@ const emptyHarvest = {
 }
 
 const HarvestEntry = () => {
-    const { apiaries, hives, harvests, addHarvest } = useBeeData()
+    const { apiaries, hives, harvests, addHarvest, updateHarvest } = useBeeData()
     const [form, setForm] = useState(emptyHarvest)
     const [feedback, setFeedback] = useState('')
+    const [editingId, setEditingId] = useState(null)
 
     const apiaryOptions = useMemo(() => apiaries.map((apiary) => ({ value: apiary.id, label: apiary.name })), [apiaries])
     const hiveOptions = useMemo(() => {
@@ -40,17 +41,40 @@ const HarvestEntry = () => {
         setForm((prev) => ({ ...prev, [name]: value, ...(name === 'apiaryId' ? { hiveId: '' } : null) }))
     }
 
+    const startEdit = (harvest) => {
+        setEditingId(harvest.id)
+        setFeedback('')
+        setForm({
+            ...harvest,
+            quantityKg: harvest.quantityKg ?? '',
+            humidity: harvest.humidity ?? '',
+            jarred: Boolean(harvest.jarred),
+        })
+    }
+
+    const cancelEdit = () => {
+        setEditingId(null)
+        setForm(emptyHarvest)
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault()
         if (!form.apiaryId || !form.hiveId || !form.date || !form.honeyType) return
-        addHarvest({
+        const payload = {
             ...form,
             quantityKg: Number(form.quantityKg),
             humidity: form.humidity ? Number(form.humidity) : undefined,
             jarred: Boolean(form.jarred),
-        })
-        setFeedback('Récolte enregistrée')
+        }
+        if (editingId) {
+            updateHarvest(editingId, payload)
+            setFeedback('Récolte mise à jour')
+        } else {
+            addHarvest(payload)
+            setFeedback('Récolte enregistrée')
+        }
         setForm(emptyHarvest)
+        setEditingId(null)
     }
 
     return (
@@ -185,9 +209,16 @@ const HarvestEntry = () => {
                         </div>
                     )}
 
-                    <button type="submit" className="btn-primary">
-                        Enregistrer la récolte
-                    </button>
+                    <div className="pill-row">
+                        <button type="submit" className="btn-primary">
+                            {editingId ? 'Mettre à jour la récolte' : 'Enregistrer la récolte'}
+                        </button>
+                        {editingId && (
+                            <button type="button" className="btn-ghost" onClick={cancelEdit}>
+                                Annuler la modification
+                            </button>
+                        )}
+                    </div>
                 </form>
             </section>
 
@@ -214,6 +245,11 @@ const HarvestEntry = () => {
                                             <div className="muted">
                                                 Mise en pots : {item.jarred ? 'Réalisée' : 'À planifier'}
                                                 {item.jarNotes ? ` — ${item.jarNotes}` : ''}
+                                            </div>
+                                            <div className="pill-row">
+                                                <button type="button" className="btn-ghost" onClick={() => startEdit(item)}>
+                                                    Modifier cette récolte
+                                                </button>
                                             </div>
                                         </li>
                                     )
