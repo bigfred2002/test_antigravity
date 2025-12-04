@@ -11,6 +11,7 @@ const initialForm = {
     notes: '',
     treatment: '',
     honeySupers: 'non',
+    photo: null,
 }
 
 const VisitEntry = () => {
@@ -41,6 +42,26 @@ const VisitEntry = () => {
         if (submitted) {
             resetStatus()
         }
+    }
+
+    const handlePhotoChange = (event) => {
+        const file = event.target.files?.[0]
+        if (!file) {
+            setForm((prev) => ({ ...prev, photo: null }))
+            return
+        }
+
+        const reader = new FileReader()
+        reader.onload = () => {
+            setForm((prev) => ({
+                ...prev,
+                photo: {
+                    name: file.name,
+                    dataUrl: reader.result,
+                },
+            }))
+        }
+        reader.readAsDataURL(file)
     }
 
     const handleSubmit = (event) => {
@@ -218,6 +239,21 @@ const VisitEntry = () => {
                         value={form.notes}
                         onChange={handleChange}
                     />
+                </div>
+
+                <div className="form-grid">
+                    <div className="form-group">
+                        <label htmlFor="photo">Photo de la visite</label>
+                        <input id="photo" name="photo" type="file" accept="image/*" onChange={handlePhotoChange} />
+                        <p className="helper-text">Ajoutez une vue rapide du couvain ou de l’environnement.</p>
+                    </div>
+                    {form.photo && (
+                        <div className="photo-preview">
+                            <p className="eyebrow">Aperçu</p>
+                            <img src={form.photo.dataUrl} alt={form.photo.name} />
+                            <p className="muted">{form.photo.name}</p>
+                        </div>
+                    )}
                 </div>
 
                 {status === 'success' && submitted && (

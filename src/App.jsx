@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
 import VisitEntry from './pages/VisitEntry'
+import ApiaryDefinition from './pages/ApiaryDefinition'
+import HiveDefinition from './pages/HiveDefinition'
 import { BeeDataProvider } from './context/BeeDataContext'
 
 function App() {
@@ -9,12 +11,14 @@ function App() {
         <BeeDataProvider>
             <Router>
                 <Routes>
-                    <Route path="/" element={<Layout />}>
-                        <Route index element={<Dashboard />} />
-                        <Route path="visit" element={<VisitEntry />} />
-                    </Route>
-                </Routes>
-            </Router>
+                        <Route path="/" element={<Layout />}>
+                            <Route index element={<Dashboard />} />
+                            <Route path="visit" element={<VisitEntry />} />
+                            <Route path="apiary" element={<ApiaryDefinition />} />
+                            <Route path="hives" element={<HiveDefinition />} />
+                        </Route>
+                    </Routes>
+                </Router>
         </BeeDataProvider>
     )
 }

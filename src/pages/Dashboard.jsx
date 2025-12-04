@@ -45,7 +45,7 @@ const inspiration = [
 ]
 
 const Dashboard = () => {
-    const { metrics, visits, hives } = useBeeData()
+    const { metrics, visits, hives, equipment, updateEquipmentStock } = useBeeData()
 
     const recentVisits = visits
         .slice()
@@ -135,9 +135,61 @@ const Dashboard = () => {
                                 <span className="pill">{visit.weather}</span>
                                 <span className="pill">Couvain : {visit.broodPattern}</span>
                             </div>
-                            <p className="visit-notes">{visit.notes}</p>
+                            <div className="visit-content">
+                                <p className="visit-notes">{visit.notes}</p>
+                                {visit.photo && (
+                                    <div className="visit-photo" aria-label="Photo de la visite">
+                                        <img src={visit.photo.dataUrl} alt={visit.photo.name} />
+                                        <p className="muted">{visit.photo.name}</p>
+                                    </div>
+                                )}
+                            </div>
                         </article>
                     ))}
+                </div>
+            </section>
+
+            <section className="panel" aria-label="Matériel et stock">
+                <div className="panel-header">
+                    <div>
+                        <p className="eyebrow">Préparation matériel</p>
+                        <h3>Matériel nécessaire et en stock</h3>
+                    </div>
+                    <p className="panel-caption">Cadres, hausses, traitements et pots prêts pour les prochaines visites.</p>
+                </div>
+                <div className="equipment-grid">
+                    {equipment.map((item) => {
+                        const ratio = Math.min(100, Math.round((item.inStock / item.needed) * 100))
+                        return (
+                            <article key={item.id} className="equipment-card" aria-label={item.name}>
+                                <div className="equipment-card__header">
+                                    <div>
+                                        <p className="eyebrow">{item.category}</p>
+                                        <h4>{item.name}</h4>
+                                    </div>
+                                    <span className="pill">
+                                        {item.inStock}/{item.needed}
+                                    </span>
+                                </div>
+                                <p className="equipment-note">{item.note}</p>
+                                <div className="progress">
+                                    <div className="progress-bar" style={{ width: `${ratio}%` }} />
+                                </div>
+                                <div className="equipment-actions">
+                                    <button type="button" className="btn-ghost" onClick={() => updateEquipmentStock(item.id, 1)}>
+                                        +1 stock
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn-ghost"
+                                        onClick={() => updateEquipmentStock(item.id, -1)}
+                                    >
+                                        -1 stock
+                                    </button>
+                                </div>
+                            </article>
+                        )
+                    })}
                 </div>
             </section>
 

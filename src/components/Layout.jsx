@@ -1,11 +1,18 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ClipboardList } from 'lucide-react';
+import { Boxes, ClipboardList, LayoutDashboard, MapPinned } from 'lucide-react';
 
 const Layout = () => {
     const location = useLocation();
 
     const isActive = (path) => location.pathname === path;
+
+    const titles = {
+        '/': 'Tableau de bord',
+        '/visit': 'Nouvelle Visite',
+        '/apiary': 'Fiche rucher',
+        '/hives': 'Définition des ruches',
+    };
 
     return (
         <div className="layout">
@@ -30,11 +37,27 @@ const Layout = () => {
                         <ClipboardList size={20} />
                         <span>Saisie Visite</span>
                     </Link>
+                    <Link
+                        to="/apiary"
+                        className={`nav-item ${isActive('/apiary') ? 'active' : ''}`}
+                        aria-current={isActive('/apiary') ? 'page' : undefined}
+                    >
+                        <MapPinned size={20} />
+                        <span>Définir le rucher</span>
+                    </Link>
+                    <Link
+                        to="/hives"
+                        className={`nav-item ${isActive('/hives') ? 'active' : ''}`}
+                        aria-current={isActive('/hives') ? 'page' : undefined}
+                    >
+                        <Boxes size={20} />
+                        <span>Ruches</span>
+                    </Link>
                 </nav>
             </aside>
             <main className="content">
                 <header className="top-bar">
-                    <h2>{isActive('/') ? 'Tableau de bord' : 'Nouvelle Visite'}</h2>
+                    <h2>{titles[location.pathname] || 'Carnet apicole'}</h2>
                     <div className="user-profile">
                         <div className="avatar">JD</div>
                     </div>
