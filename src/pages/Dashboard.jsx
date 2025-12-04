@@ -40,8 +40,28 @@ const inspiration = [
     },
 ]
 
+const formatFrenchDate = (date) =>
+    date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+
+const getSeasonalWink = (today) => {
+    const formatted = formatFrenchDate(today)
+
+    if (today.getMonth() === 11) {
+        return {
+            date: formatted,
+            text: `Le ${formatted}, laisse les colonies au calme : vérifie juste par dessous le poids des ruches et l’étanchéité. Un peu de candi si la balance faiblit, sinon couvre-plateaux bien posés pour un hivernage serein.`,
+        }
+    }
+
+    return {
+        date: formatted,
+        text: `Le ${formatted}, observe l’équilibre réserves/couvain et ajuste l’aération. Un petit clin d’œil pour garder des colonies sereines selon la météo du moment.`,
+    }
+}
+
 const Dashboard = () => {
     const { metrics, visits, hives, apiaries, harvests, equipment, updateEquipmentStock } = useBeeData()
+    const seasonalWink = getSeasonalWink(new Date())
 
     const recentVisits = visits
         .slice()
@@ -272,12 +292,9 @@ const Dashboard = () => {
 
             <section className="honey-banner" aria-label="Référence apicole">
                 <div className="banner-content">
-                    <p className="eyebrow">Clin d'œil de l’apiculteur 😉</p>
-                    <h3>Préparer la prochaine miellée</h3>
-                    <p>
-                        Suivez la floraison locale, anticipez la pose des hausses et remerciez vos abeilles avec des
-                        visites régulières et sereines. Un petit rappel pour garder le sourire en ouvrant vos ruches.
-                    </p>
+                    <p className="eyebrow">Clin d'œil apicole · {seasonalWink.date}</p>
+                    <h3>Message du jour</h3>
+                    <p>{seasonalWink.text}</p>
                     <div className="banner-tags">
                         <span>Floraisons locales</span>
                         <span>Hausses</span>
