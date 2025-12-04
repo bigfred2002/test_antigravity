@@ -1,0 +1,34 @@
+{
+  "name": "test_antigravity",
+  "version": "1.0.0",
+  "description": "test de l'ide AAntigravity",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bigfred2002/test_antigravity.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bigfred2002/test_antigravity/issues"
+  },
+  "homepage": "https://github.com/bigfred2002/test_antigravity#readme",
+  "dependencies": {
+    "lucide-react": "^0.555.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "react-router-dom": "^7.10.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
+    "vite": "^7.2.6"
+  }
+}
