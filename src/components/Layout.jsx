@@ -1,5 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import {
     BookOpenCheck,
     Boxes,
@@ -16,6 +17,7 @@ import {
 
 const Layout = () => {
     const location = useLocation();
+    const { currentUser, logout } = useAuth()
 
     const isActive = (path) => location.pathname === path;
 
@@ -112,8 +114,19 @@ const Layout = () => {
             <main className="content">
                 <header className="top-bar">
                     <h2>{titles[location.pathname] || 'Carnet apicole'}</h2>
-                    <div className="user-profile">
-                        <div className="avatar">JD</div>
+                    <div className="user-profile" aria-label="Profil utilisateur">
+                        {currentUser && (
+                            <>
+                                <div className="user-meta">
+                                    <p className="muted small">Compte apiculteur</p>
+                                    <p className="user-name">{currentUser.name}</p>
+                                </div>
+                                <div className="avatar">{currentUser.avatar || 'AP'}</div>
+                                <Link className="pill" to="/login" onClick={logout}>
+                                    Changer d’utilisateur
+                                </Link>
+                            </>
+                        )}
                     </div>
                 </header>
                 <div className="page-content">

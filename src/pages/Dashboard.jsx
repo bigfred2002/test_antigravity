@@ -3,28 +3,28 @@ import { Link } from 'react-router-dom'
 import { useBeeData } from '../context/BeeDataContext'
 
 const heroImage =
-    'https://images.unsplash.com/photo-1498601761256-5c1d2dbeedcb?auto=format&fit=crop&w=1400&q=80'
+    'https://static.wixstatic.com/media/14438f_99d84b7b5cd84fac80940190faeaf2c1%7Emv2.jpg/v1/fit/w_1400,h_900,al_c,q_90/14438f_99d84b7b5cd84fac80940190faeaf2c1%7Emv2.jpg'
 
 const highlightCards = [
     {
         title: 'Inspection de printemps',
         description: 'Observer la reprise de ponte, vérifier la place disponible et ajuster l’aération.',
         image:
-            'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=900&q=80',
+            'https://static.wixstatic.com/media/14438f_becf4114b7694e01abc8b868718ad26a~mv2.jpg/v1/fill/w_1200,h_800,q_85/14438f_becf4114b7694e01abc8b868718ad26a~mv2.jpg',
         tags: ['Reine vue', 'Cadres équilibrés', 'Réserves ok'],
     },
     {
         title: 'Miellée en cours',
         description: 'Surveiller le poids, poser ou retirer les hausses et suivre la floraison locale.',
         image:
-            'https://images.unsplash.com/photo-1504275107627-0c2ba7a43dba?auto=format&fit=crop&w=900&q=80',
+            'https://static.wixstatic.com/media/14438f_3286a90738b949708324cdcbe7d608b6~mv2.jpg/v1/fill/w_1200,h_800,q_85/14438f_3286a90738b949708324cdcbe7d608b6~mv2.jpg',
         tags: ['Balance', 'Hausses', 'Floraisons'],
     },
     {
         title: 'Douceur de miel',
         description: 'Un miel clair et parfumé obtenu grâce à une récolte patiente et bien préparée.',
         image:
-            'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=900&q=80',
+            'https://static.wixstatic.com/media/14438f_d6d26a90f6594ca386a33ca7c14742e8~mv2.jpg/v1/fill/w_1200,h_800,q_85/14438f_d6d26a90f6594ca386a33ca7c14742e8~mv2.jpg',
         tags: ['Récolte', 'Filtration', 'Maturation'],
     },
 ]
@@ -290,7 +290,7 @@ const Dashboard = () => {
                 </div>
                 <div className="banner-visual" role="img" aria-label="Pot de miel artisanal">
                     <img
-                        src="https://images.unsplash.com/photo-1505576399279-565b52d4ac71?auto=format&fit=crop&w=700&q=80"
+                        src="https://static.wixstatic.com/media/14438f_10cc214ce99b43b08c1d7c1aac712209~mv2.jpg/v1/fill/w_900,h_600,q_85/14438f_10cc214ce99b43b08c1d7c1aac712209~mv2.jpg"
                         alt="Pot de miel et rayon de cire"
                         loading="lazy"
                     />

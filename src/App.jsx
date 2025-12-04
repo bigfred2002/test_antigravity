@@ -15,31 +15,39 @@ import Administration from './pages/Administration'
 import KnowledgeBase from './pages/KnowledgeBase'
 import KnowledgeEditor from './pages/KnowledgeEditor'
 import { BeeDataProvider } from './context/BeeDataContext'
+import { AuthProvider } from './context/AuthContext'
+import RequireAuth from './components/RequireAuth'
+import Login from './pages/Login'
 
 function App() {
     return (
-        <BeeDataProvider>
-            <Router>
-                <Routes>
-                        <Route path="/" element={<Layout />}>
-                            <Route index element={<Dashboard />} />
-                            <Route path="visit" element={<VisitEntry />} />
-                            <Route path="visits" element={<VisitHistory />} />
-                            <Route path="apiary" element={<ApiaryDefinition />} />
-                            <Route path="hives" element={<HiveDefinition />} />
-                            <Route path="hives/review" element={<HiveReview />} />
-                            <Route path="harvest" element={<HarvestEntry />} />
-                            <Route path="inventory" element={<Inventory />} />
-                            <Route path="records" element={<Records />} />
-                            <Route path="equipment-entry" element={<EquipmentEntry />} />
-                            <Route path="equipment-edit" element={<EquipmentUpdate />} />
-                            <Route path="administration" element={<Administration />} />
-                            <Route path="knowledge" element={<KnowledgeBase />} />
-                            <Route path="knowledge/edit" element={<KnowledgeEditor />} />
+        <AuthProvider>
+            <BeeDataProvider>
+                <Router>
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
+                        <Route element={<RequireAuth />}>
+                            <Route path="/" element={<Layout />}>
+                                <Route index element={<Dashboard />} />
+                                <Route path="visit" element={<VisitEntry />} />
+                                <Route path="visits" element={<VisitHistory />} />
+                                <Route path="apiary" element={<ApiaryDefinition />} />
+                                <Route path="hives" element={<HiveDefinition />} />
+                                <Route path="hives/review" element={<HiveReview />} />
+                                <Route path="harvest" element={<HarvestEntry />} />
+                                <Route path="inventory" element={<Inventory />} />
+                                <Route path="records" element={<Records />} />
+                                <Route path="equipment-entry" element={<EquipmentEntry />} />
+                                <Route path="equipment-edit" element={<EquipmentUpdate />} />
+                                <Route path="administration" element={<Administration />} />
+                                <Route path="knowledge" element={<KnowledgeBase />} />
+                                <Route path="knowledge/edit" element={<KnowledgeEditor />} />
+                            </Route>
                         </Route>
                     </Routes>
                 </Router>
-        </BeeDataProvider>
+            </BeeDataProvider>
+        </AuthProvider>
     )
 }
 
