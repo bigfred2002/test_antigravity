@@ -55,64 +55,6 @@ const Dashboard = () => {
             ...visit,
             hiveName: hives.find((hive) => hive.id === visit.hiveId)?.name || 'Ruche inconnue',
         }))
-    const { hives, visits, loading, error, fetchData } = useApiStore(
-        (state) => ({
-            hives: state.hives,
-            visits: state.visits,
-            loading: state.loading,
-            error: state.error,
-            fetchData: state.fetchData,
-        }),
-    );
-
-    useEffect(() => {
-        if (!hives.length && !loading && !error) {
-            fetchData();
-        }
-    }, [fetchData, hives.length, loading, error]);
-
-    const activeHivesCount = useMemo(
-        () => hives.filter((hive) => hive.active).length,
-        [hives],
-    );
-
-    const visitsLast30Days = useMemo(() => {
-        const cutoff = new Date();
-        cutoff.setDate(cutoff.getDate() - 30);
-
-        return visits.filter((visit) => new Date(visit.date) >= cutoff).length;
-    }, [visits]);
-
-    const averageHealth = useMemo(() => {
-        const activeHives = hives.filter(
-            (hive) => hive.active && typeof hive.health === 'number',
-        );
-
-        if (!activeHives.length) return null;
-
-        const averageValue =
-            activeHives.reduce((sum, hive) => sum + hive.health, 0) /
-            activeHives.length;
-
-        return Math.round(averageValue);
-    }, [hives]);
-
-    const renderValue = (value, formatter) => {
-        if (loading) return <span className="placeholder">Chargement...</span>;
-        if (error) return <span className="placeholder error">--</span>;
-        if (value === null || value === undefined)
-            return <span className="placeholder muted">N/A</span>;
-
-        return formatter ? formatter(value) : value;
-    };
-
-    const healthLabel = (value) => {
-        if (value >= 85) return 'Excellente';
-        if (value >= 70) return 'Bonne';
-        if (value >= 50) return 'Fragile';
-        return 'Critique';
-    };
-
     return (
         <div className="dashboard">
             <section className="hero-panel" aria-label="Mise en avant apicole">
