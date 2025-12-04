@@ -9,7 +9,9 @@ const demoUser = {
     name: 'Apiculteur Demo',
     login: 'apiculteur-demo',
     email: 'demo@ruche.expert',
-    password: 'demo',
+    passwordHash:
+        'f5a8d8f07f05ef103f50ef29aca5eb64839f25ee26029fd66d141c835c527b50',
+    passwordSalt: 'demo-salt',
     avatar: 'AD',
     role: 'user',
 }
@@ -19,9 +21,31 @@ const adminUser = {
     name: 'Administrateur',
     login: 'admin',
     email: 'admin@ruche.expert',
-    password: 'admin',
+    passwordHash:
+        '4038d2775fbd37e6e49dd929146f442abec731bcafab7f6f07600241b1b847a6',
+    passwordSalt: 'admin-salt',
     avatar: 'A',
     role: 'admin',
+}
+
+const generateSalt = () => {
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+        const bytes = new Uint8Array(12)
+        crypto.getRandomValues(bytes)
+        return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('')
+    }
+    return `${Date.now().toString(16)}-${Math.random().toString(16).slice(2, 10)}`
+}
+
+const hashPassword = async (password, salt) => {
+    if (typeof crypto === 'undefined' || !crypto.subtle) {
+        throw new Error('Le navigateur ne prend pas en charge le hachage sécurisé des mots de passe.')
+    }
+    const encoder = new TextEncoder()
+    const data = encoder.encode(`${salt}:${password}`)
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
 }
 
 const loadPersistedAuth = () => {
@@ -61,17 +85,54 @@ export const AuthProvider = ({ children }) => {
     )
 
     useEffect(() => {
+        const migrateLegacyPasswords = async () => {
+            const hasPlainPassword = users.some((user) => user.password && !user.passwordHash)
+            if (!hasPlainPassword) return
+
+            try {
+                const migrated = await Promise.all(
+                    users.map(async (user) => {
+                        if (user.password && !user.passwordHash) {
+                            const passwordSalt = user.passwordSalt || generateSalt()
+                            const passwordHash = await hashPassword(user.password, passwordSalt)
+                            const rest = { ...user }
+                            delete rest.password
+                            return { ...rest, passwordHash, passwordSalt }
+                        }
+                        if (user.password) {
+                            const rest = { ...user }
+                            delete rest.password
+                            return rest
+                        }
+                        return user
+                    }),
+                )
+                setUsers(migrated)
+            } catch (error) {
+                console.error('Migration des mots de passe échouée', error)
+            }
+        }
+
+        migrateLegacyPasswords()
+    }, [users])
+
+    useEffect(() => {
         if (typeof window === 'undefined' || typeof localStorage === 'undefined') return
+        const sanitizedUsers = users.map((user) => {
+            const sanitized = { ...user }
+            delete sanitized.password
+            return sanitized
+        })
         localStorage.setItem(
             AUTH_STORAGE_KEY,
             JSON.stringify({
-                users,
+                users: sanitizedUsers,
                 currentUserId,
             }),
         )
     }, [users, currentUserId])
 
-    const login = (loginIdentifier, password) => {
+    const login = async (loginIdentifier, password) => {
         const normalizedIdentifier = loginIdentifier.trim().toLowerCase()
         if (!normalizedIdentifier) {
             throw new Error("L'identifiant est requis")
@@ -82,7 +143,12 @@ export const AuthProvider = ({ children }) => {
         }
 
         const user = users.find((candidate) => candidate.login?.toLowerCase() === normalizedIdentifier)
-        if (!user || user.password !== password) {
+        if (!user?.passwordHash || !user.passwordSalt) {
+            throw new Error('Authentification indisponible pour cet utilisateur')
+        }
+
+        const computedHash = await hashPassword(password, user.passwordSalt)
+        if (computedHash !== user.passwordHash) {
             throw new Error('Identifiants incorrects')
         }
         setCurrentUserId(user.id)
@@ -91,7 +157,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => setCurrentUserId(null)
 
-    const register = ({ login, email, password }) => {
+    const register = async ({ login, email, password }) => {
         const normalizedLogin = login.trim()
         const normalizedEmail = email.trim().toLowerCase()
 
@@ -123,12 +189,16 @@ export const AuthProvider = ({ children }) => {
             .slice(0, 2)
             .toUpperCase()
 
+        const passwordSalt = generateSalt()
+        const passwordHash = await hashPassword(password, passwordSalt)
+
         const newUser = {
             id,
             name: normalizedLogin,
             login: normalizedLogin,
             email: normalizedEmail,
-            password,
+            passwordHash,
+            passwordSalt,
             avatar,
             role: 'user',
         }
@@ -137,13 +207,16 @@ export const AuthProvider = ({ children }) => {
         return newUser
     }
 
-    const updateUserPassword = (userId, newPassword) => {
+    const updateUserPassword = async (userId, newPassword) => {
+        const passwordSalt = generateSalt()
+        const passwordHash = await hashPassword(newPassword, passwordSalt)
         setUsers((prev) =>
             prev.map((user) =>
                 user.id === userId
                     ? {
                           ...user,
-                          password: newPassword,
+                          passwordHash,
+                          passwordSalt,
                       }
                     : user,
             ),

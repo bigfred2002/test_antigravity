@@ -15,6 +15,8 @@ const initialForm = {
     photo: null,
 }
 
+const MAX_PHOTO_SIZE_BYTES = 500 * 1024
+
 const VisitEntry = () => {
     const { apiaries, hives, addVisit, status, error, resetStatus } = useBeeData()
     const [form, setForm] = useState(initialForm)
@@ -68,6 +70,19 @@ const VisitEntry = () => {
         if (!file) {
             setForm((prev) => ({ ...prev, photo: null }))
             return
+        }
+
+        if (file.size > MAX_PHOTO_SIZE_BYTES) {
+            setFormError((prev) => ({
+                ...prev,
+                photo: 'La photo dépasse la limite de 500 Ko. Choisissez un fichier plus léger.',
+            }))
+            setForm((prev) => ({ ...prev, photo: null }))
+            return
+        }
+
+        if (formError.photo) {
+            setFormError((prev) => ({ ...prev, photo: undefined }))
         }
 
         const reader = new FileReader()
@@ -288,7 +303,10 @@ const VisitEntry = () => {
                     <div className="form-group">
                         <label htmlFor="photo">Photo de la visite</label>
                         <input id="photo" name="photo" type="file" accept="image/*" onChange={handlePhotoChange} />
-                        <p className="helper-text">Ajoutez une vue rapide du couvain ou de l’environnement.</p>
+                        <p className="helper-text">
+                            Ajoutez une vue rapide du couvain ou de l’environnement (500 Ko maximum).
+                        </p>
+                        {formError.photo && <p className="error-text">{formError.photo}</p>}
                     </div>
                     {form.photo && (
                         <div className="photo-preview">

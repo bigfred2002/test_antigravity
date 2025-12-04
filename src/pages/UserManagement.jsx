@@ -10,11 +10,15 @@ const UserManagement = () => {
     const protectedIds = useMemo(() => new Set(['admin', 'demo']), [])
     const isAdmin = currentUser?.role === 'admin'
 
-    const handlePasswordChange = (userId) => {
+    const handlePasswordChange = async (userId) => {
         const nextPassword = passwords[userId]
         if (!nextPassword) return
-        updateUserPassword(userId, nextPassword)
-        setFeedback('Mot de passe mis à jour.')
+        try {
+            await updateUserPassword(userId, nextPassword)
+            setFeedback('Mot de passe mis à jour.')
+        } catch (error) {
+            setFeedback(error.message || 'Impossible de mettre à jour le mot de passe.')
+        }
     }
 
     const handleDelete = (userId) => {

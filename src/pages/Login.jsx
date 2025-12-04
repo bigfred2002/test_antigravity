@@ -20,12 +20,12 @@ const Login = () => {
         setMessage('')
     }
 
-    const handleLogin = (event) => {
+    const handleLogin = async (event) => {
         event.preventDefault()
         setError('')
         setMessage('')
         try {
-            const user = login(loginIdentifier, loginPassword)
+            const user = await login(loginIdentifier, loginPassword)
             setMessage(`Bienvenue ${user.name}`)
             navigate(redirectPath)
             closeModals()
@@ -34,12 +34,12 @@ const Login = () => {
         }
     }
 
-    const handleRegister = (event) => {
+    const handleRegister = async (event) => {
         event.preventDefault()
         setError('')
         setMessage('')
         try {
-            const newUser = register(registerData)
+            const newUser = await register(registerData)
             setMessage(`Compte créé pour ${newUser.name}`)
             setRegisterData({ login: '', email: '', password: '' })
             navigate('/')
@@ -49,13 +49,13 @@ const Login = () => {
         }
     }
 
-    const connectDemo = () => {
+    const connectDemo = async () => {
         setLoginIdentifier('apiculteur-demo')
         setLoginPassword('demo')
         setMessage('Connexion au compte démo...')
         setError('')
         try {
-            login('apiculteur-demo', 'demo')
+            await login('apiculteur-demo', 'demo')
             navigate('/')
             closeModals()
         } catch (err) {
@@ -64,13 +64,13 @@ const Login = () => {
         }
     }
 
-    const connectAdmin = () => {
+    const connectAdmin = async () => {
         setLoginIdentifier('admin')
         setLoginPassword('admin')
         setMessage('Connexion au compte administrateur...')
         setError('')
         try {
-            login('admin', 'admin')
+            await login('admin', 'admin')
             navigate('/')
             closeModals()
         } catch (err) {

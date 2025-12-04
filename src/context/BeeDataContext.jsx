@@ -129,8 +129,20 @@ export const BeeDataProvider = ({ children }) => {
             movements,
         }
 
-        localStorage.setItem(getStorageKey(currentUser.id), JSON.stringify(payload))
-    }, [apiaries, hiveList, visitList, harvestList, equipment, knowledge, movements, currentUser])
+        try {
+            localStorage.setItem(getStorageKey(currentUser.id), JSON.stringify(payload))
+            if (status === 'error' && error?.includes('stockage')) {
+                setStatus('idle')
+                setError(null)
+            }
+        } catch (storageError) {
+            console.warn('Impossible de persister les données', storageError)
+            setStatus('error')
+            setError(
+                "Espace de stockage navigateur insuffisant. Réduisez la taille des pièces jointes ou supprimez des données.",
+            )
+        }
+    }, [apiaries, hiveList, visitList, harvestList, equipment, knowledge, movements, currentUser, status, error])
 
     const addApiary = (payload) => {
         const newApiary = { id: `apiary-${Date.now()}`, ...payload }
