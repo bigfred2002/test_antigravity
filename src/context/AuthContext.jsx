@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 
 const AuthContext = createContext()
 const AUTH_STORAGE_KEY = 'bee-auth-store'
+const LOGIN_MAX_LENGTH = 20
 
 const demoUser = {
     id: 'demo',
@@ -44,6 +45,7 @@ export const AuthProvider = ({ children }) => {
             const normalized = {
                 ...user,
                 login: user.login || user.name,
+                email: user.email || '',
                 role: user.role || 'user',
             }
             byId.set(normalized.id, normalized)
@@ -71,11 +73,15 @@ export const AuthProvider = ({ children }) => {
 
     const login = (loginIdentifier, password) => {
         const normalizedIdentifier = loginIdentifier.trim().toLowerCase()
-        const user = users.find(
-            (candidate) =>
-                candidate.login?.toLowerCase() === normalizedIdentifier ||
-                candidate.name?.toLowerCase() === normalizedIdentifier,
-        )
+        if (!normalizedIdentifier) {
+            throw new Error("L'identifiant est requis")
+        }
+
+        if (normalizedIdentifier.length > LOGIN_MAX_LENGTH) {
+            throw new Error(`L'identifiant ne peut pas dépasser ${LOGIN_MAX_LENGTH} caractères`)
+        }
+
+        const user = users.find((candidate) => candidate.login?.toLowerCase() === normalizedIdentifier)
         if (!user || user.password !== password) {
             throw new Error('Identifiants incorrects')
         }
@@ -85,24 +91,47 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => setCurrentUserId(null)
 
-    const register = ({ name, login, password }) => {
-        if (users.some((user) => user.name.toLowerCase() === name.toLowerCase())) {
-            throw new Error('Un compte existe déjà avec ce nom')
+    const register = ({ login, email, password }) => {
+        const normalizedLogin = login.trim()
+        const normalizedEmail = email.trim().toLowerCase()
+
+        if (!normalizedLogin || !normalizedEmail || !password) {
+            throw new Error('Tous les champs sont obligatoires')
         }
 
-        if (users.some((user) => user.login.toLowerCase() === login.toLowerCase())) {
+        if (normalizedLogin.length > LOGIN_MAX_LENGTH) {
+            throw new Error(`L'identifiant ne peut pas dépasser ${LOGIN_MAX_LENGTH} caractères`)
+        }
+
+        if (users.some((user) => user.login.toLowerCase() === normalizedLogin.toLowerCase())) {
             throw new Error('Un compte existe déjà avec cet identifiant')
         }
 
+        if (users.some((user) => user.email?.toLowerCase() === normalizedEmail)) {
+            throw new Error('Un compte existe déjà avec cet email')
+        }
+
+        if (password.length < 4) {
+            throw new Error('Le mot de passe doit contenir au moins 4 caractères')
+        }
+
         const id = `user-${Date.now()}`
-        const avatar = name
+        const avatar = normalizedLogin
             .split(' ')
             .map((part) => part[0])
             .join('')
             .slice(0, 2)
             .toUpperCase()
 
-        const newUser = { id, name, login, password, avatar, role: 'user' }
+        const newUser = {
+            id,
+            name: normalizedLogin,
+            login: normalizedLogin,
+            email: normalizedEmail,
+            password,
+            avatar,
+            role: 'user',
+        }
         setUsers((prev) => [...prev, newUser])
         setCurrentUserId(id)
         return newUser
