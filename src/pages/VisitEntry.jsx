@@ -1,6 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import useApiStore from '../store/useApiStore';
 
 const VisitEntry = () => {
+    const { hives, loading, error, fetchData } = useApiStore((state) => ({
+        hives: state.hives,
+        loading: state.loading,
+        error: state.error,
+        fetchData: state.fetchData,
+    }));
+
+    useEffect(() => {
+        if (!hives.length && !loading && !error) {
+            fetchData();
+        }
+    }, [fetchData, hives.length, loading, error]);
+
     return (
         <div className="visit-entry">
             <form className="visit-form">
@@ -10,12 +24,23 @@ const VisitEntry = () => {
                 </div>
                 <div className="form-group">
                     <label>Ruche</label>
-                    <select>
-                        <option>Ruche #1</option>
-                        <option>Ruche #2</option>
+                    <select disabled={loading || !!error || !hives.length}>
+                        {loading && <option>Chargement...</option>}
+                        {error && <option>Ruches indisponibles</option>}
+                        {!loading && !error && !hives.length && (
+                            <option>Aucune ruche disponible</option>
+                        )}
+                        {!loading && !error &&
+                            hives.map((hive) => (
+                                <option key={hive.id} value={hive.id}>
+                                    {hive.name}
+                                </option>
+                            ))}
                     </select>
                 </div>
-                <button type="submit" className="btn-primary">Enregistrer</button>
+                <button type="submit" className="btn-primary">
+                    Enregistrer
+                </button>
             </form>
         </div>
     );
