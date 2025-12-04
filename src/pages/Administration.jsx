@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { BookOpenCheck, Download, FileSpreadsheet, Mail, RefreshCw } from 'lucide-react'
+import { BookOpen, Download, ExternalLink, FileSpreadsheet, Image, Mail, Phone, RefreshCw } from 'lucide-react'
 import { useBeeData } from '../context/BeeDataContext'
 
 const Administration = () => {
@@ -20,9 +20,11 @@ const Administration = () => {
             visits: visits.length,
             equipment: equipment.length,
             harvests: harvests.length,
+            contacts: knowledge.contacts?.length || 0,
             documents: knowledge.documents?.length || 0,
+            gallery: knowledge.gallery?.length || 0,
         }),
-        [visits, equipment, harvests, knowledge.documents],
+        [visits, equipment, harvests, knowledge.contacts, knowledge.documents, knowledge.gallery],
     )
 
     const handleExport = () => {
@@ -217,16 +219,46 @@ const Administration = () => {
                     </article>
                     <article className="definition-card">
                         <div className="card-header">
-                            <h4>Mise à jour base de connaissance</h4>
-                            <BookOpenCheck size={18} />
+                            <h4>Contacts</h4>
+                            <Phone size={18} />
                         </div>
-                        <p className="muted">
-                            Ajoutez contacts, liens utiles et documents stockés localement depuis l’espace
-                            d’administration.
-                        </p>
-                        <p className="muted small">{stats.documents} documents déjà disponibles.</p>
-                        <Link to="/administration/knowledge" className="btn-primary">
-                            Gérer la base
+                        <p className="muted">Ajoutez ou retirez les personnes à joindre rapidement.</p>
+                        <p className="muted small">{stats.contacts || 0} fiches disponibles.</p>
+                        <Link to="/administration/knowledge/contacts" className="btn-primary">
+                            Gérer les contacts
+                        </Link>
+                    </article>
+                    <article className="definition-card">
+                        <div className="card-header">
+                            <h4>Sites web</h4>
+                            <ExternalLink size={18} />
+                        </div>
+                        <p className="muted">Centralisez les liens météo, techniques ou associatifs.</p>
+                        <p className="muted small">{knowledge.sites.length} liens enregistrés.</p>
+                        <Link to="/administration/knowledge/sites" className="btn-primary">
+                            Gérer les sites
+                        </Link>
+                    </article>
+                    <article className="definition-card">
+                        <div className="card-header">
+                            <h4>Documents</h4>
+                            <BookOpen size={18} />
+                        </div>
+                        <p className="muted">Ajoutez vos procédures, check-lists et fichiers clés.</p>
+                        <p className="muted small">{stats.documents} documents disponibles.</p>
+                        <Link to="/administration/knowledge/documents" className="btn-primary">
+                            Gérer les documents
+                        </Link>
+                    </article>
+                    <article className="definition-card">
+                        <div className="card-header">
+                            <h4>Galerie</h4>
+                            <Image size={18} />
+                        </div>
+                        <p className="muted">Mettez à jour les images partagées dans les ressources.</p>
+                        <p className="muted small">{stats.gallery} entrée(s) dans la galerie.</p>
+                        <Link to="/administration/gallery" className="btn-primary">
+                            Gérer la galerie
                         </Link>
                     </article>
                 </div>
@@ -245,6 +277,7 @@ const Administration = () => {
                     <div className="pill">{stats.equipment} éléments d’inventaire</div>
                     <div className="pill">{stats.harvests} lots de récolte</div>
                     <div className="pill">{stats.documents} documents enregistrés</div>
+                    <div className="pill">{stats.gallery} visuels en galerie</div>
                 </div>
                 {feedback && (
                     <div className="alert success" role="status">

@@ -204,4 +204,24 @@ export const knowledgeBase = {
             size: 232,
         },
     ],
+    gallery: [
+        {
+            id: 'gallery-1',
+            title: 'Sortie de printemps',
+            description: 'Première visite avec miellée de pissenlit, cadres bien garnis.',
+            image: '/images/highlight-visit.jpg',
+        },
+        {
+            id: 'gallery-2',
+            title: 'Hausses en place',
+            description: 'Pose de hausses avant la floraison d’acacia, météo clémente.',
+            image: '/images/highlight-flow.jpg',
+        },
+        {
+            id: 'gallery-3',
+            title: 'Récolte miel ambré',
+            description: 'Fûts prêts pour la maturation avec un miel aromatique.',
+            image: '/images/honey-banner.jpg',
+        },
+    ],
 }

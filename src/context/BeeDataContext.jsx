@@ -32,6 +32,7 @@ const normalizeKnowledge = (knowledge) => ({
     contacts: normalizeWithIds(knowledge?.contacts, 'contact'),
     sites: normalizeWithIds(knowledge?.sites, 'site'),
     documents: normalizeDocuments(knowledge?.documents),
+    gallery: normalizeWithIds(knowledge?.gallery, 'gallery'),
 })
 
 const normalizedInitialKnowledge = normalizeKnowledge(initialKnowledge)
@@ -213,6 +214,19 @@ export const BeeDataProvider = ({ children }) => {
         })
     }
 
+    const addGalleryItem = (payload) => {
+        const item = { id: payload.id || `gallery-${Date.now()}`, ...payload }
+        setKnowledge((prev) => ({ ...prev, gallery: [...(prev.gallery || []), item] }))
+        return item
+    }
+
+    const removeGalleryItem = (id) => {
+        setKnowledge((prev) => ({
+            ...prev,
+            gallery: (prev.gallery || []).filter((item) => item.id !== id),
+        }))
+    }
+
     const addKnowledgeDocument = (document) => {
         const payload = {
             id: document.id || `doc-${Date.now()}`,
@@ -296,6 +310,8 @@ export const BeeDataProvider = ({ children }) => {
         updateKnowledge,
         addKnowledgeDocument,
         removeKnowledgeDocument,
+        addGalleryItem,
+        removeGalleryItem,
         status,
         error,
         resetStatus: () => setStatus('idle'),
