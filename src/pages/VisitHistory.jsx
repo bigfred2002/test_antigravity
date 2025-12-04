@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useBeeData } from '../context/BeeDataContext'
 
 const VisitHistory = () => {
@@ -24,9 +25,10 @@ const VisitHistory = () => {
             <div className="panel-header">
                 <div>
                     <p className="eyebrow">Suivi des visites</p>
-                    <h3>Consulter et actualiser les inspections</h3>
+                    <h3>Toutes les informations et ressources</h3>
                     <p className="panel-caption">
-                        Filtrez par rucher ou par ruche puis ajustez les notes et mesures sans passer par la saisie.
+                        Filtrez par rucher ou par ruche, ajustez les informations clés et ouvrez chaque fiche détaillée pour
+                        récupérer les ressources téléchargées.
                     </p>
                 </div>
                 <div className="filter-row">
@@ -63,14 +65,21 @@ const VisitHistory = () => {
                             <th>Rucher</th>
                             <th>Ruche</th>
                             <th>Poids (kg)</th>
+                            <th>Force</th>
+                            <th>Couvain</th>
                             <th>Météo</th>
+                            <th>Traitement</th>
+                            <th>Hausses</th>
                             <th>Notes</th>
+                            <th>Ressources</th>
+                            <th>Fiche visite</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredVisits.map((visit) => {
                             const hive = hives.find((item) => item.id === visit.hiveId)
                             const apiary = apiaries.find((item) => item.id === visit.apiaryId)
+                            const resourceLabel = visit.photo ? visit.photo.name : 'Aucune'
                             return (
                                 <tr key={visit.id}>
                                     <td>{new Date(visit.date).toLocaleDateString('fr-FR')}</td>
@@ -88,8 +97,40 @@ const VisitHistory = () => {
                                     <td>
                                         <input
                                             type="text"
+                                            value={visit.colonyStrength || ''}
+                                            onChange={(event) => updateVisit(visit.id, { colonyStrength: event.target.value })}
+                                            placeholder="Force"
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={visit.broodPattern || ''}
+                                            onChange={(event) => updateVisit(visit.id, { broodPattern: event.target.value })}
+                                            placeholder="Compact..."
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
                                             value={visit.weather}
                                             onChange={(event) => updateVisit(visit.id, { weather: event.target.value })}
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={visit.treatment || ''}
+                                            onChange={(event) => updateVisit(visit.id, { treatment: event.target.value })}
+                                            placeholder="Sirop..."
+                                        />
+                                    </td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            value={visit.honeySupers || ''}
+                                            onChange={(event) => updateVisit(visit.id, { honeySupers: event.target.value })}
+                                            placeholder="Oui/Non"
                                         />
                                     </td>
                                     <td>
@@ -98,6 +139,20 @@ const VisitHistory = () => {
                                             value={visit.notes}
                                             onChange={(event) => updateVisit(visit.id, { notes: event.target.value })}
                                         />
+                                    </td>
+                                    <td>
+                                        {visit.photo ? (
+                                            <a href={visit.photo.dataUrl} download={visit.photo.name}>
+                                                {resourceLabel}
+                                            </a>
+                                        ) : (
+                                            <span className="muted">Aucune</span>
+                                        )}
+                                    </td>
+                                    <td>
+                                        <Link className="btn-ghost" to={`/visits/${visit.id}`}>
+                                            Voir la fiche
+                                        </Link>
                                     </td>
                                 </tr>
                             )

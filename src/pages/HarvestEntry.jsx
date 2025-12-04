@@ -230,33 +230,48 @@ const HarvestEntry = () => {
                     </div>
                     <p className="panel-caption">Classement automatique par type de miel.</p>
                 </div>
-                <div className="definition-grid">
-                    {Object.entries(groupedHarvests).map(([type, list]) => (
-                        <article key={type} className="definition-card">
-                            <h4>{type}</h4>
-                            <ul className="muted">
-                                {list.map((item) => {
+                <div className="table-wrapper">
+                    <table className="data-table">
+                        <thead>
+                            <tr>
+                                <th>Lot</th>
+                                <th>Type</th>
+                                <th>Rucher / Ruche</th>
+                                <th>Date</th>
+                                <th>Quantité (kg)</th>
+                                <th>Mise en pots</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Object.entries(groupedHarvests).map(([type, list]) =>
+                                list.map((item) => {
                                     const hive = hives.find((hiveItem) => hiveItem.id === item.hiveId)
                                     const apiary = apiaries.find((apiaryItem) => apiaryItem.id === item.apiaryId)
                                     return (
-                                        <li key={item.id}>
-                                            {new Date(item.date).toLocaleDateString('fr-FR')} · {apiary?.name} / {hive?.name} –
-                                            {` ${item.quantityKg} kg`} ({item.lot || 'Lot à renseigner'})
-                                            <div className="muted">
-                                                Mise en pots : {item.jarred ? 'Réalisée' : 'À planifier'}
+                                        <tr key={item.id}>
+                                            <td>{item.lot || 'Lot à renseigner'}</td>
+                                            <td>{type}</td>
+                                            <td>
+                                                {apiary?.name} / {hive?.name}
+                                            </td>
+                                            <td>{new Date(item.date).toLocaleDateString('fr-FR')}</td>
+                                            <td>{item.quantityKg} kg</td>
+                                            <td>
+                                                {item.jarred ? 'Réalisée' : 'À planifier'}
                                                 {item.jarNotes ? ` — ${item.jarNotes}` : ''}
-                                            </div>
-                                            <div className="pill-row">
+                                            </td>
+                                            <td>
                                                 <button type="button" className="btn-ghost" onClick={() => startEdit(item)}>
                                                     Modifier cette récolte
                                                 </button>
-                                            </div>
-                                        </li>
+                                            </td>
+                                        </tr>
                                     )
-                                })}
-                            </ul>
-                        </article>
-                    ))}
+                                }),
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             </section>
         </div>
