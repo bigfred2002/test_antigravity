@@ -43,8 +43,8 @@ export const AuthProvider = ({ children }) => {
         )
     }, [users, currentUserId])
 
-    const login = (email, password) => {
-        const user = users.find((u) => u.email.toLowerCase() === email.toLowerCase())
+    const login = (name, password) => {
+        const user = users.find((u) => u.name.toLowerCase() === name.toLowerCase())
         if (!user || user.password !== password) {
             throw new Error('Identifiants incorrects')
         }
@@ -55,6 +55,10 @@ export const AuthProvider = ({ children }) => {
     const logout = () => setCurrentUserId(null)
 
     const register = ({ name, email, password }) => {
+        if (users.some((user) => user.name.toLowerCase() === name.toLowerCase())) {
+            throw new Error('Un compte existe déjà avec ce nom')
+        }
+
         if (users.some((user) => user.email.toLowerCase() === email.toLowerCase())) {
             throw new Error('Un compte existe déjà avec cet email')
         }

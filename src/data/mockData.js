@@ -19,6 +19,36 @@ export const apiaries = [
         objectives: 'Produire un miel clair de miellée de tilleul et suivre les essaims tardifs.',
         notes: 'Zone mi-ombragée, prévoir abreuvement artificiel en été.',
     },
+    {
+        id: 'apiary-3',
+        name: 'Rucher des Rivières',
+        category: 'Vallée',
+        location: 'Bords de Vienne',
+        altitude: '210 m',
+        flora: 'Saule, prunellier, pissenlit, fruitiers',
+        objectives: 'Suivi des miellées précoces et observation de la dynamique de printemps.',
+        notes: 'Accès plat, brise-vent à maintenir pour l’hiver.',
+    },
+    {
+        id: 'apiary-4',
+        name: 'Rucher Urbain',
+        category: 'Urbain',
+        location: 'Toits végétalisés du centre-ville',
+        altitude: '120 m',
+        flora: 'Jardins partagés, tilleuls d’alignement, lierre',
+        objectives: 'Sensibilisation du public et suivi d’un miel de quartier.',
+        notes: 'Prévoir visites en horaires creux, protéger les accès.',
+    },
+    {
+        id: 'apiary-5',
+        name: 'Rucher Atlantique',
+        category: 'Côtier',
+        location: 'Marais doux près de l’estuaire',
+        altitude: '45 m',
+        flora: 'Bourdaine, trèfle blanc, ronces',
+        objectives: 'Conserver un miel doux et suivre l’influence saline.',
+        notes: 'Bonne ventilation naturelle, attention aux tempêtes.',
+    },
 ]
 
 export const hives = [
@@ -62,6 +92,26 @@ export const hives = [
         queenYear: 2021,
         origin: 'Transhumance',
     },
+    {
+        id: 'hive-5',
+        apiaryId: 'apiary-3',
+        name: 'Ruche Saules',
+        status: 'active',
+        population: 'Forte',
+        type: 'Dadant 10 cadres',
+        queenYear: 2023,
+        origin: 'Essaim capturé',
+    },
+    {
+        id: 'hive-6',
+        apiaryId: 'apiary-4',
+        name: 'Ruche Toit-Tilleul',
+        status: 'active',
+        population: 'Moyenne',
+        type: 'Dadant 10 cadres',
+        queenYear: 2024,
+        origin: 'Achat local',
+    },
 ]
 
 export const visits = [
@@ -95,6 +145,36 @@ export const visits = [
         weather: 'Clair',
         notes: 'Population dense, vigilance essaimage.',
     },
+    {
+        id: 'visit-4',
+        apiaryId: 'apiary-3',
+        hiveId: 'hive-5',
+        date: '2024-04-12',
+        weight: 33,
+        broodPattern: 'Régulier',
+        weather: 'Variable',
+        notes: 'Premiers apports de saule, pollen abondant.',
+    },
+    {
+        id: 'visit-5',
+        apiaryId: 'apiary-4',
+        hiveId: 'hive-6',
+        date: '2024-05-02',
+        weight: 27,
+        broodPattern: 'Compact',
+        weather: 'Clair',
+        notes: 'Ruche citadine calme, prévoir hausses légères.',
+    },
+    {
+        id: 'visit-6',
+        apiaryId: 'apiary-2',
+        hiveId: 'hive-4',
+        date: '2024-05-18',
+        weight: 28,
+        broodPattern: 'À surveiller',
+        weather: 'Orageux',
+        notes: 'Ventilation ouverte, renforcer les réserves.',
+    },
 ]
 
 export const harvests = [
@@ -120,6 +200,39 @@ export const harvests = [
         humidity: 16.8,
         notes: 'Belle rondeur aromatique, à maturer 48h.',
     },
+    {
+        id: 'harvest-3',
+        apiaryId: 'apiary-3',
+        hiveId: 'hive-5',
+        date: '2024-07-05',
+        honeyType: 'Printemps de vallée',
+        lot: 'LOT-0705-V',
+        quantityKg: 15,
+        humidity: 17.1,
+        notes: 'Miel clair et floral, bonne fluidité.',
+    },
+    {
+        id: 'harvest-4',
+        apiaryId: 'apiary-4',
+        hiveId: 'hive-6',
+        date: '2024-07-28',
+        honeyType: 'Urbain',
+        lot: 'LOT-0728-U',
+        quantityKg: 9,
+        humidity: 16.9,
+        notes: 'Notes de tilleul, extraction rapide.',
+    },
+    {
+        id: 'harvest-5',
+        apiaryId: 'apiary-1',
+        hiveId: 'hive-2',
+        date: '2024-09-02',
+        honeyType: 'Brut de fin d’été',
+        lot: 'LOT-0902-B',
+        quantityKg: 11,
+        humidity: 17.6,
+        notes: 'Dernière miellée, texture crémeuse.',
+    },
 ]
 
 export const movements = [
@@ -140,6 +253,33 @@ export const movements = [
         quantity: 2,
         destination: 'AMAP',
         notes: 'Soutien partenaires',
+    },
+    {
+        id: 'mov-3',
+        date: '2024-09-10',
+        lot: 'LOT-0705-V',
+        type: 'vente',
+        quantity: 3,
+        destination: 'Épicerie fine',
+        notes: 'Mise en rayon premium',
+    },
+    {
+        id: 'mov-4',
+        date: '2024-09-18',
+        lot: 'LOT-0728-U',
+        type: 'don',
+        quantity: 1.5,
+        destination: 'Atelier pédagogique',
+        notes: 'Dégustation guidée',
+    },
+    {
+        id: 'mov-5',
+        date: '2024-10-02',
+        lot: 'LOT-0902-B',
+        type: 'vente',
+        quantity: 5,
+        destination: 'Boutique du rucher',
+        notes: 'Lots en pot verre recyclable',
     },
 ]
 
@@ -189,6 +329,15 @@ export const equipment = [
         price: 0.65,
         note: 'Capsules dorées compatibles',
     },
+    {
+        id: 'eq-suits',
+        name: 'Combinaisons ventilées',
+        category: 'Protection',
+        needed: 6,
+        inStock: 4,
+        price: 72,
+        note: 'Deux tailles à renouveler',
+    },
 ]
 
 export const knowledgeBase = {
@@ -196,11 +345,15 @@ export const knowledgeBase = {
         { id: 'contact-1', name: 'Vétérinaire sanitaire', detail: 'Dr. L. Marchand — 06 45 22 10 98' },
         { id: 'contact-2', name: 'Fournisseur bois', detail: 'Menuiserie des Roches — 05 87 41 22 15' },
         { id: 'contact-3', name: 'Groupement apicole local', detail: 'Association Abeilles & Terroirs' },
+        { id: 'contact-4', name: 'Laboratoire d’analyses miel', detail: 'Labomiel Atlantique — 05 57 88 12 00' },
+        { id: 'contact-5', name: 'Mentor apiculteur', detail: 'J. Bernier — suivi transhumance' },
     ],
     sites: [
         { id: 'site-1', label: 'Guide des bonnes pratiques', url: 'https://agriculture.gouv.fr/apiculture' },
         { id: 'site-2', label: 'Bulletin météo agricole', url: 'https://meteofrance.com' },
         { id: 'site-3', label: 'Forum apiculteurs francophones', url: 'https://www.apiculture-france.com' },
+        { id: 'site-4', label: 'Varroa & biosécurité', url: 'https://itsap.asso.fr' },
+        { id: 'site-5', label: 'Ressources pédagogiques rucher', url: 'https://abeilles-et-fleurs.fr' },
     ],
     documents: [
         {
@@ -224,6 +377,20 @@ export const knowledgeBase = {
             uploadedAt: '2024-04-12',
             size: 232,
         },
+        {
+            id: 'doc-4',
+            name: 'Plan de transhumance estivale',
+            url: '/documents/transhumance-ete.txt',
+            uploadedAt: '2024-05-10',
+            size: 198,
+        },
+        {
+            id: 'doc-5',
+            name: 'Traçabilité des lots',
+            url: '/documents/tracabilite-lots.txt',
+            uploadedAt: '2024-06-08',
+            size: 210,
+        },
     ],
     gallery: [
         {
@@ -243,6 +410,18 @@ export const knowledgeBase = {
             title: 'Récolte miel ambré',
             description: 'Fûts prêts pour la maturation avec un miel aromatique.',
             image: '/images/honey-banner.jpg',
+        },
+        {
+            id: 'gallery-4',
+            title: 'Visite urbaine',
+            description: 'Ruche sur toit végétalisé avec vue panoramique.',
+            image: '/images/hero.jpg',
+        },
+        {
+            id: 'gallery-5',
+            title: 'Atelier pédagogique',
+            description: 'Initiation à l’ouverture de ruche pour les curieux.',
+            image: '/images/highlight-honey.jpg',
         },
     ],
 }
