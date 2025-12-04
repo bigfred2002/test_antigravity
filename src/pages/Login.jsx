@@ -7,9 +7,9 @@ const Login = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const redirectPath = location.state?.from || '/'
-    const [loginName, setLoginName] = useState('Apiculteur Demo')
+    const [loginIdentifier, setLoginIdentifier] = useState('apiculteur-demo')
     const [loginPassword, setLoginPassword] = useState('demo')
-    const [registerData, setRegisterData] = useState({ name: '', email: '', password: '' })
+    const [registerData, setRegisterData] = useState({ name: '', login: '', password: '' })
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
 
@@ -18,7 +18,7 @@ const Login = () => {
         setError('')
         setMessage('')
         try {
-            const user = login(loginName, loginPassword)
+            const user = login(loginIdentifier, loginPassword)
             setMessage(`Bienvenue ${user.name}`)
             navigate(redirectPath)
         } catch (err) {
@@ -33,7 +33,7 @@ const Login = () => {
         try {
             const newUser = register(registerData)
             setMessage(`Compte créé pour ${newUser.name}`)
-            setRegisterData({ name: '', email: '', password: '' })
+            setRegisterData({ name: '', login: '', password: '' })
             navigate('/')
         } catch (err) {
             setError(err.message)
@@ -41,12 +41,12 @@ const Login = () => {
     }
 
     const connectDemo = () => {
-        setLoginName('Apiculteur Demo')
+        setLoginIdentifier('apiculteur-demo')
         setLoginPassword('demo')
         setMessage('Connexion au compte démo...')
         setError('')
         try {
-            login('Apiculteur Demo', 'demo')
+            login('apiculteur-demo', 'demo')
             navigate('/')
         } catch (err) {
             setError(err.message)
@@ -90,16 +90,16 @@ const Login = () => {
                             </button>
                         </div>
                         <label className="form-field">
-                            <span>Nom</span>
+                            <span>Identifiant</span>
                             <input
                                 type="text"
-                                value={loginName}
-                                onChange={(e) => setLoginName(e.target.value)}
+                                value={loginIdentifier}
+                                onChange={(e) => setLoginIdentifier(e.target.value)}
                                 required
-                                placeholder="Nom de votre apiculteur"
+                                placeholder="Identifiant de connexion"
                             />
                         </label>
-                        <p className="muted small">Connexion par nom d’apiculteur et mot de passe.</p>
+                        <p className="muted small">Connexion par identifiant et mot de passe.</p>
                         <label className="form-field">
                             <span>Mot de passe</span>
                             <input
@@ -128,13 +128,13 @@ const Login = () => {
                             />
                         </label>
                         <label className="form-field">
-                            <span>Email</span>
+                            <span>Identifiant</span>
                             <input
-                                type="email"
-                                value={registerData.email}
-                                onChange={(e) => setRegisterData((prev) => ({ ...prev, email: e.target.value }))}
+                                type="text"
+                                value={registerData.login}
+                                onChange={(e) => setRegisterData((prev) => ({ ...prev, login: e.target.value }))}
                                 required
-                                placeholder="contact@rucher.fr"
+                                placeholder="Choisissez votre identifiant"
                             />
                         </label>
                         <label className="form-field">
