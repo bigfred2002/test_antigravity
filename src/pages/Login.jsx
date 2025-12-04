@@ -79,6 +79,13 @@ const Login = () => {
         }
     }
 
+    const renderAlert = () =>
+        (error || message) && (
+            <div className={`auth-alert ${error ? 'error' : 'success'}`} role="status">
+                {error || message}
+            </div>
+        )
+
     return (
         <div className="auth-layout">
             <div className="auth-illustration" aria-hidden="true">
@@ -137,11 +144,7 @@ const Login = () => {
                     </div>
                 </div>
 
-                {(error || message) && (
-                    <div className={`auth-alert ${error ? 'error' : 'success'}`} role="status">
-                        {error || message}
-                    </div>
-                )}
+                {!activeModal && renderAlert()}
 
                 <div className="auth-footer">
                     <p className="muted small">
@@ -174,6 +177,7 @@ const Login = () => {
                                     ×
                                 </button>
                             </div>
+                            {renderAlert()}
                             <form className="modal-body" onSubmit={handleLogin}>
                                 <label className="form-field">
                                     <span>Identifiant</span>
@@ -221,6 +225,7 @@ const Login = () => {
                                     ×
                                 </button>
                             </div>
+                            {renderAlert()}
                             <form className="modal-body" onSubmit={handleRegister}>
                                 <label className="form-field">
                                     <span>Identifiant</span>
