@@ -107,16 +107,16 @@ const Login = () => {
                             </button>
                         </div>
                         <label className="form-field">
-                            <span>Identifiant</span>
+                            <span>Nom ou identifiant</span>
                             <input
                                 type="text"
                                 value={loginIdentifier}
                                 onChange={(e) => setLoginIdentifier(e.target.value)}
                                 required
-                                placeholder="Identifiant de connexion"
+                                placeholder="Saisissez votre nom ou identifiant"
                             />
                         </label>
-                        <p className="muted small">Connexion par identifiant et mot de passe.</p>
+                        <p className="muted small">Connexion possible avec le nom d’utilisateur ou l’identifiant.</p>
                         <label className="form-field">
                             <span>Mot de passe</span>
                             <input
