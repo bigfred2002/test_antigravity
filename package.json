@@ -28,7 +28,8 @@
     "react-dom": "^19.2.1",
     "react-hook-form": "^7.68.0",
     "react-router-dom": "^7.10.0",
-    "zod": "^4.1.13"
+    "zod": "^4.1.13",
+    "jspdf": "^2.5.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.1.1",

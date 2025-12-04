@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BookOpen, Download, ExternalLink, FileSpreadsheet, Image, Mail, Phone, RefreshCw } from 'lucide-react'
+import { jsPDF } from 'jspdf'
 import { useBeeData } from '../context/BeeDataContext'
 
 const Administration = () => {
-    const { exportData, importData, visits, equipment, harvests, knowledge } = useBeeData()
+    const { exportData, importData, visits, equipment, harvests, knowledge, apiaries, hives } = useBeeData()
     const [reportType, setReportType] = useState('visits')
     const [email, setEmail] = useState('')
     const [feedback, setFeedback] = useState('')
@@ -14,6 +15,13 @@ const Administration = () => {
         inventory: 'Inventaires',
         harvests: 'Récoltes',
     }
+
+    const apiaryLookup = useMemo(
+        () => Object.fromEntries(apiaries.map((apiary) => [apiary.id, apiary.name])),
+        [apiaries],
+    )
+
+    const hiveLookup = useMemo(() => Object.fromEntries(hives.map((hive) => [hive.id, hive.name])), [hives])
 
     const stats = useMemo(
         () => ({
@@ -67,7 +75,9 @@ const Administration = () => {
                 visits: visits.map((visit) => ({
                     id: visit.id,
                     apiaryId: visit.apiaryId,
+                    apiaryName: apiaryLookup[visit.apiaryId] || 'Rucher',
                     hiveId: visit.hiveId,
+                    hiveName: hiveLookup[visit.hiveId] || 'Ruche',
                     date: visit.date,
                     weight: visit.weight,
                     notes: visit.notes,
@@ -85,6 +95,7 @@ const Administration = () => {
                     category: item.category,
                     needed: item.needed,
                     inStock: item.inStock,
+                    note: item.note || '',
                 })),
             }
         }
@@ -95,7 +106,9 @@ const Administration = () => {
             harvests: harvests.map((harvest) => ({
                 id: harvest.id,
                 apiaryId: harvest.apiaryId,
+                apiaryName: apiaryLookup[harvest.apiaryId] || 'Rucher',
                 hiveId: harvest.hiveId,
+                hiveName: hiveLookup[harvest.hiveId] || 'Ruche',
                 date: harvest.date,
                 lot: harvest.lot,
                 quantityKg: harvest.quantityKg,
@@ -104,23 +117,76 @@ const Administration = () => {
         }
     }
 
+    const addPdfLine = (doc, text, state) => {
+        const lines = doc.splitTextToSize(text, 180)
+        lines.forEach((line) => {
+            if (state.cursorY > 280) {
+                doc.addPage()
+                state.cursorY = 20
+            }
+            doc.text(line, 14, state.cursorY)
+            state.cursorY += 6
+        })
+    }
+
+    const downloadPdfReport = (payload, label) => {
+        const doc = new jsPDF()
+        const state = { cursorY: 26 }
+
+        doc.setFontSize(16)
+        doc.text(`Rapport ${label}`, 14, 18)
+        doc.setFontSize(10)
+        addPdfLine(doc, `Généré le ${new Date(payload.generatedAt).toLocaleString('fr-FR')}`, state)
+        addPdfLine(doc, `Total ${label.toLowerCase()} : ${payload.total}`, state)
+        state.cursorY += 4
+
+        if (payload.type === 'visits') {
+            payload.visits.forEach((visit, index) => {
+                addPdfLine(doc, `Visite ${index + 1} · ${visit.date}`, state)
+                addPdfLine(
+                    doc,
+                    `Rucher : ${visit.apiaryName} — Ruche : ${visit.hiveName} — Poids : ${visit.weight || 0} kg`,
+                    state,
+                )
+                addPdfLine(doc, `Notes : ${visit.notes || 'Aucune note renseignée'}`, state)
+                state.cursorY += 2
+            })
+        }
+
+        if (payload.type === 'inventory') {
+            payload.items.forEach((item, index) => {
+                addPdfLine(doc, `${index + 1}. ${item.name} (${item.category})`, state)
+                addPdfLine(doc, `Stock : ${item.inStock}/${item.needed} · Note : ${item.note || '—'}`, state)
+                state.cursorY += 2
+            })
+        }
+
+        if (payload.type === 'harvests') {
+            payload.harvests.forEach((harvest, index) => {
+                addPdfLine(doc, `Lot ${index + 1} · ${harvest.lot} (${harvest.date})`, state)
+                addPdfLine(
+                    doc,
+                    `${harvest.honeyType} — ${harvest.quantityKg} kg · ${harvest.apiaryName} / ${harvest.hiveName}`,
+                    state,
+                )
+                state.cursorY += 2
+            })
+        }
+
+        doc.save(`rapport-${payload.type}-${new Date().toISOString().slice(0, 10)}.pdf`)
+    }
+
     const handleGenerateReport = () => {
         const payload = buildReport()
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
-        const url = URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `rapport-${reportType}-${new Date().toISOString().slice(0, 10)}.json`
-        link.click()
-        URL.revokeObjectURL(url)
         const label = reportOptions[reportType] || 'rapport'
-        setFeedback(`Rapport ${label} généré et téléchargé.`)
+        downloadPdfReport(payload, label)
+        setFeedback(`Rapport ${label} généré et téléchargé en PDF.`)
     }
 
     const handleShare = (event) => {
         event.preventDefault()
         const label = reportOptions[reportType] || 'rapport'
-        setFeedback(`Un rapport ${label} est prêt pour ${email || 'votre destinataire'}.`)
+        setFeedback(`Un rapport ${label} en PDF est prêt pour ${email || 'votre destinataire'}.`)
     }
 
     return (

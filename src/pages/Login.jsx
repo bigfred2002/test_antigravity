@@ -7,7 +7,7 @@ const Login = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const redirectPath = location.state?.from || '/'
-    const [loginEmail, setLoginEmail] = useState('demo@ruche.expert')
+    const [loginName, setLoginName] = useState('Apiculteur Demo')
     const [loginPassword, setLoginPassword] = useState('demo')
     const [registerData, setRegisterData] = useState({ name: '', email: '', password: '' })
     const [message, setMessage] = useState('')
@@ -18,7 +18,7 @@ const Login = () => {
         setError('')
         setMessage('')
         try {
-            const user = login(loginEmail, loginPassword)
+            const user = login(loginName, loginPassword)
             setMessage(`Bienvenue ${user.name}`)
             navigate(redirectPath)
         } catch (err) {
@@ -41,12 +41,12 @@ const Login = () => {
     }
 
     const connectDemo = () => {
-        setLoginEmail('demo@ruche.expert')
+        setLoginName('Apiculteur Demo')
         setLoginPassword('demo')
         setMessage('Connexion au compte démo...')
         setError('')
         try {
-            login('demo@ruche.expert', 'demo')
+            login('Apiculteur Demo', 'demo')
             navigate('/')
         } catch (err) {
             setError(err.message)
@@ -90,15 +90,16 @@ const Login = () => {
                             </button>
                         </div>
                         <label className="form-field">
-                            <span>Email</span>
+                            <span>Nom</span>
                             <input
-                                type="email"
-                                value={loginEmail}
-                                onChange={(e) => setLoginEmail(e.target.value)}
+                                type="text"
+                                value={loginName}
+                                onChange={(e) => setLoginName(e.target.value)}
                                 required
-                                placeholder="votre@email.com"
+                                placeholder="Nom de votre apiculteur"
                             />
                         </label>
+                        <p className="muted small">Connexion par nom d’apiculteur et mot de passe.</p>
                         <label className="form-field">
                             <span>Mot de passe</span>
                             <input

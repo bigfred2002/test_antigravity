@@ -37,7 +37,7 @@ const Layout = () => {
         '/apiary': 'Fiche rucher',
         '/hives': 'Définition des ruches',
         '/hives/review': 'Suivi des ruches',
-        '/harvest': 'Lots et mise en pots',
+        '/harvest': 'Récolte de miel',
         '/harvest/inventory': 'Inventaires miel',
         '/harvest/movements': 'Mouvements de miel',
         '/inventory': 'Inventaire',
@@ -83,7 +83,7 @@ const Layout = () => {
                         key: 'harvests',
                         label: 'Récoltes',
                         items: [
-                            { to: '/harvest', icon: Droplets, label: 'Lots et mise en pots' },
+                            { to: '/harvest', icon: Droplets, label: 'Récolte de miel' },
                             { to: '/harvest/inventory', icon: PackageOpen, label: 'Inventaires miel' },
                             { to: '/harvest/movements', icon: Scale, label: 'Mouvements' },
                         ],

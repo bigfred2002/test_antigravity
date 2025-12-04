@@ -80,6 +80,22 @@ const Dashboard = () => {
     }, {})
     return (
         <div className="dashboard">
+            <section className="honey-banner" aria-label="Référence apicole">
+                <div className="banner-content">
+                    <p className="eyebrow">Clin d'œil apicole · {seasonalWink.date}</p>
+                    <h3>Message du jour</h3>
+                    <p>{seasonalWink.text}</p>
+                    <div className="banner-tags">
+                        <span>Floraisons locales</span>
+                        <span>Hausses</span>
+                        <span>Récolte</span>
+                    </div>
+                </div>
+                <div className="banner-visual" role="img" aria-label="Pot de miel artisanal">
+                    <img src="/images/honey-banner.jpg" alt="Pot de miel et rayon de cire" loading="lazy" />
+                </div>
+            </section>
+
             <section className="hero-panel" aria-label="Mise en avant apicole">
                 <div className="hero-text">
                     <p className="eyebrow">Carnet de rucher · Saison en cours</p>
@@ -290,21 +306,6 @@ const Dashboard = () => {
                 </div>
             </section>
 
-            <section className="honey-banner" aria-label="Référence apicole">
-                <div className="banner-content">
-                    <p className="eyebrow">Clin d'œil apicole · {seasonalWink.date}</p>
-                    <h3>Message du jour</h3>
-                    <p>{seasonalWink.text}</p>
-                    <div className="banner-tags">
-                        <span>Floraisons locales</span>
-                        <span>Hausses</span>
-                        <span>Récolte</span>
-                    </div>
-                </div>
-                <div className="banner-visual" role="img" aria-label="Pot de miel artisanal">
-                    <img src="/images/honey-banner.jpg" alt="Pot de miel et rayon de cire" loading="lazy" />
-                </div>
-            </section>
         </div>
     )
 }
