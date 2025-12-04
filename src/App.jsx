@@ -14,6 +14,14 @@ import EquipmentUpdate from './pages/EquipmentUpdate'
 import Administration from './pages/Administration'
 import KnowledgeBase from './pages/KnowledgeBase'
 import KnowledgeEditor from './pages/KnowledgeEditor'
+import KnowledgeContacts from './pages/KnowledgeContacts'
+import KnowledgeSites from './pages/KnowledgeSites'
+import KnowledgeDocuments from './pages/KnowledgeDocuments'
+import Gallery from './pages/Gallery'
+import ContactManager from './pages/ContactManager'
+import SiteManager from './pages/SiteManager'
+import DocumentManager from './pages/DocumentManager'
+import GalleryManager from './pages/GalleryManager'
 import { BeeDataProvider } from './context/BeeDataContext'
 import { AuthProvider } from './context/AuthContext'
 import RequireAuth from './components/RequireAuth'
@@ -41,6 +49,14 @@ function App() {
                                 <Route path="equipment-edit" element={<EquipmentUpdate />} />
                                 <Route path="administration" element={<Administration />} />
                                 <Route path="knowledge" element={<KnowledgeBase />} />
+                                <Route path="knowledge/contacts" element={<KnowledgeContacts />} />
+                                <Route path="knowledge/sites" element={<KnowledgeSites />} />
+                                <Route path="knowledge/documents" element={<KnowledgeDocuments />} />
+                                <Route path="gallery" element={<Gallery />} />
+                                <Route path="administration/knowledge/contacts" element={<ContactManager />} />
+                                <Route path="administration/knowledge/sites" element={<SiteManager />} />
+                                <Route path="administration/knowledge/documents" element={<DocumentManager />} />
+                                <Route path="administration/gallery" element={<GalleryManager />} />
                                 <Route path="knowledge/edit" element={<KnowledgeEditor />} />
                                 <Route path="administration/knowledge" element={<KnowledgeEditor />} />
                             </Route>

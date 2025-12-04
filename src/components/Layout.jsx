@@ -2,16 +2,20 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import {
+    BookOpen,
     BookOpenCheck,
     Boxes,
     ClipboardList,
     ChevronDown,
     Droplets,
+    ExternalLink,
     FolderCog,
     HardDriveDownload,
+    Image,
     LayoutDashboard,
     MapPinned,
     Notebook,
+    Phone,
     PackageOpen,
     Wrench,
 } from 'lucide-react'
@@ -39,6 +43,14 @@ const Layout = () => {
         '/equipment-edit': 'Modification matériel',
         '/administration': 'Administration',
         '/knowledge': 'Base de connaissance',
+        '/knowledge/contacts': 'Contacts apicoles',
+        '/knowledge/sites': 'Sites utiles',
+        '/knowledge/documents': 'Documents',
+        '/gallery': 'Galeries',
+        '/administration/knowledge/contacts': 'Gestion des contacts',
+        '/administration/knowledge/sites': 'Gestion des sites web',
+        '/administration/knowledge/documents': 'Gestion des documents',
+        '/administration/gallery': 'Gestion de la galerie',
         '/administration/knowledge': 'Mise à jour de la base de connaissance',
     }
 
@@ -92,14 +104,42 @@ const Layout = () => {
             {
                 key: 'resources',
                 label: 'Ressources',
-                items: [{ to: '/knowledge', icon: BookOpenCheck, label: 'Base de connaissance' }],
+                groups: [
+                    {
+                        key: 'knowledge-base',
+                        label: 'Base de connaissance',
+                        items: [
+                            { to: '/knowledge/contacts', icon: Phone, label: 'Contacts' },
+                            { to: '/knowledge/sites', icon: ExternalLink, label: 'Sites web' },
+                            { to: '/knowledge/documents', icon: BookOpen, label: 'Documents' },
+                        ],
+                    },
+                    {
+                        key: 'gallery',
+                        label: 'Galeries',
+                        items: [{ to: '/gallery', icon: Image, label: 'Galeries visuelles' }],
+                    },
+                ],
             },
             {
                 key: 'admin',
                 label: 'Administration',
-                items: [
-                    { to: '/administration', icon: HardDriveDownload, label: 'Sauvegardes & rapports' },
-                    { to: '/administration/knowledge', icon: ClipboardList, label: 'Mise à jour base de connaissance' },
+                groups: [
+                    {
+                        key: 'admin-data',
+                        label: 'Base de données',
+                        items: [{ to: '/administration', icon: HardDriveDownload, label: 'Sauvegardes & rapports' }],
+                    },
+                    {
+                        key: 'admin-knowledge',
+                        label: 'Base de connaissance',
+                        items: [
+                            { to: '/administration/knowledge/contacts', icon: Phone, label: 'Contacts' },
+                            { to: '/administration/knowledge/sites', icon: ExternalLink, label: 'Sites web' },
+                            { to: '/administration/knowledge/documents', icon: BookOpen, label: 'Documents' },
+                            { to: '/administration/gallery', icon: Image, label: 'Gestion galerie' },
+                        ],
+                    },
                 ],
             },
         ],

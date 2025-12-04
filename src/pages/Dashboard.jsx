@@ -272,11 +272,11 @@ const Dashboard = () => {
 
             <section className="honey-banner" aria-label="Référence apicole">
                 <div className="banner-content">
-                    <p className="eyebrow">Clin d'œil apicole</p>
+                    <p className="eyebrow">Clin d'œil de l’apiculteur 😉</p>
                     <h3>Préparer la prochaine miellée</h3>
                     <p>
                         Suivez la floraison locale, anticipez la pose des hausses et remerciez vos abeilles avec des
-                        visites régulières et sereines.
+                        visites régulières et sereines. Un petit rappel pour garder le sourire en ouvrant vos ruches.
                     </p>
                     <div className="banner-tags">
                         <span>Floraisons locales</span>
