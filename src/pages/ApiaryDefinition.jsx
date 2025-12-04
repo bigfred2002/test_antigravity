@@ -1,14 +1,38 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useBeeData } from '../context/BeeDataContext'
 
+const emptyApiary = {
+    name: '',
+    location: '',
+    altitude: '',
+    flora: '',
+    objectives: '',
+    notes: '',
+    category: 'Non classé',
+}
+
 const ApiaryDefinition = () => {
-    const { apiary, updateApiary } = useBeeData()
-    const [form, setForm] = useState(apiary)
+    const { apiaries, addApiary, updateApiary } = useBeeData()
+    const [selectedApiaryId, setSelectedApiaryId] = useState(apiaries[0]?.id || '')
+    const [form, setForm] = useState(apiaries[0] || emptyApiary)
     const [saved, setSaved] = useState(false)
 
     useEffect(() => {
-        setForm(apiary)
-    }, [apiary])
+        if (!selectedApiaryId) {
+            setForm(emptyApiary)
+            return
+        }
+        const current = apiaries.find((item) => item.id === selectedApiaryId)
+        setForm(current || emptyApiary)
+    }, [apiaries, selectedApiaryId])
+
+    const categories = useMemo(() => {
+        return apiaries.reduce((acc, apiary) => {
+            const key = apiary.category || 'Non classé'
+            acc[key] = acc[key] ? [...acc[key], apiary] : [apiary]
+            return acc
+        }, {})
+    }, [apiaries])
 
     const handleChange = (event) => {
         const { name, value } = event.target
@@ -18,8 +42,19 @@ const ApiaryDefinition = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        updateApiary(form)
+        if (selectedApiaryId) {
+            updateApiary(selectedApiaryId, form)
+        } else {
+            const created = addApiary(form)
+            setSelectedApiaryId(created.id)
+        }
         setSaved(true)
+    }
+
+    const startNewApiary = () => {
+        setSelectedApiaryId('')
+        setForm(emptyApiary)
+        setSaved(false)
     }
 
     return (
@@ -33,6 +68,27 @@ const ApiaryDefinition = () => {
                         visites et transhumances.
                     </p>
                 </div>
+                <div className="pill-row">
+                    <label htmlFor="apiary-select" className="muted">
+                        Choisir un rucher
+                    </label>
+                    <select
+                        id="apiary-select"
+                        value={selectedApiaryId}
+                        onChange={(e) => setSelectedApiaryId(e.target.value)}
+                        className="pill"
+                    >
+                        {apiaries.map((apiary) => (
+                            <option key={apiary.id} value={apiary.id}>
+                                {apiary.name}
+                            </option>
+                        ))}
+                        <option value="">+ Nouveau rucher</option>
+                    </select>
+                    <button type="button" className="btn-ghost" onClick={startNewApiary}>
+                        Créer un nouveau rucher
+                    </button>
+                </div>
             </header>
 
             <section className="panel">
@@ -40,7 +96,7 @@ const ApiaryDefinition = () => {
                     <div className="form-grid">
                         <div className="form-group">
                             <label htmlFor="name">Nom du rucher</label>
-                            <input id="name" name="name" type="text" value={form.name} onChange={handleChange} />
+                            <input id="name" name="name" type="text" value={form.name} onChange={handleChange} required />
                         </div>
                         <div className="form-group">
                             <label htmlFor="location">Localisation</label>
@@ -53,6 +109,10 @@ const ApiaryDefinition = () => {
                         <div className="form-group">
                             <label htmlFor="flora">Floraison dominante</label>
                             <input id="flora" name="flora" type="text" value={form.flora} onChange={handleChange} />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="category">Catégorie</label>
+                            <input id="category" name="category" type="text" value={form.category} onChange={handleChange} />
                         </div>
                     </div>
 
@@ -87,7 +147,7 @@ const ApiaryDefinition = () => {
                     )}
 
                     <button type="submit" className="btn-primary">
-                        Enregistrer les infos rucher
+                        {selectedApiaryId ? 'Mettre à jour le rucher' : 'Enregistrer ce nouveau rucher'}
                     </button>
                 </form>
             </section>
@@ -96,31 +156,23 @@ const ApiaryDefinition = () => {
                 <div className="panel-header">
                     <div>
                         <p className="eyebrow">Synthèse rapide</p>
-                        <h3>Repères clés</h3>
+                        <h3>Repères clés par catégorie</h3>
                     </div>
                     <p className="panel-caption">Une vue condensée pour briefer les intervenants et visiteurs.</p>
                 </div>
                 <div className="definition-grid">
-                    <article className="definition-card">
-                        <h4>Site</h4>
-                        <p>{form.location}</p>
-                        <p className="muted">{form.altitude}</p>
-                    </article>
-                    <article className="definition-card">
-                        <h4>Flore</h4>
-                        <p>{form.flora}</p>
-                        <p className="muted">Miellées cibles et pollen disponible</p>
-                    </article>
-                    <article className="definition-card">
-                        <h4>Objectif</h4>
-                        <p>{form.objectives}</p>
-                        <p className="muted">Production, élevage ou pollinisation</p>
-                    </article>
-                    <article className="definition-card">
-                        <h4>Conditions</h4>
-                        <p>{form.notes}</p>
-                        <p className="muted">Accès, météo, voisinage</p>
-                    </article>
+                    {Object.entries(categories).map(([category, items]) => (
+                        <article key={category} className="definition-card">
+                            <h4>{category}</h4>
+                            <ul className="muted">
+                                {items.map((item) => (
+                                    <li key={item.id}>
+                                        <strong>{item.name}</strong> · {item.location} — {item.flora}
+                                    </li>
+                                ))}
+                            </ul>
+                        </article>
+                    ))}
                 </div>
             </section>
         </div>

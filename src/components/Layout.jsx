@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Boxes, ClipboardList, LayoutDashboard, MapPinned } from 'lucide-react';
+import { Boxes, ClipboardList, Droplets, LayoutDashboard, MapPinned, Notebook, PackageOpen } from 'lucide-react';
 
 const Layout = () => {
     const location = useLocation();
@@ -12,6 +12,9 @@ const Layout = () => {
         '/visit': 'Nouvelle Visite',
         '/apiary': 'Fiche rucher',
         '/hives': 'Définition des ruches',
+        '/harvest': 'Récoltes',
+        '/inventory': 'Inventaire',
+        '/records': 'Consultation',
     };
 
     return (
@@ -52,6 +55,30 @@ const Layout = () => {
                     >
                         <Boxes size={20} />
                         <span>Ruches</span>
+                    </Link>
+                    <Link
+                        to="/harvest"
+                        className={`nav-item ${isActive('/harvest') ? 'active' : ''}`}
+                        aria-current={isActive('/harvest') ? 'page' : undefined}
+                    >
+                        <Droplets size={20} />
+                        <span>Récoltes</span>
+                    </Link>
+                    <Link
+                        to="/inventory"
+                        className={`nav-item ${isActive('/inventory') ? 'active' : ''}`}
+                        aria-current={isActive('/inventory') ? 'page' : undefined}
+                    >
+                        <PackageOpen size={20} />
+                        <span>Inventaire</span>
+                    </Link>
+                    <Link
+                        to="/records"
+                        className={`nav-item ${isActive('/records') ? 'active' : ''}`}
+                        aria-current={isActive('/records') ? 'page' : undefined}
+                    >
+                        <Notebook size={20} />
+                        <span>Consultation</span>
                     </Link>
                 </nav>
             </aside>

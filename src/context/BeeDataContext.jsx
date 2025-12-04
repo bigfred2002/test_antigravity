@@ -1,15 +1,47 @@
 import React, { createContext, useContext, useMemo, useState } from 'react'
-import { apiary as apiaryDefaults, equipment as initialEquipment, hives as initialHives, visits as initialVisits } from '../data/mockData'
+import {
+    apiaries as initialApiaries,
+    equipment as initialEquipment,
+    harvests as initialHarvests,
+    hives as initialHives,
+    visits as initialVisits,
+} from '../data/mockData'
 
 const BeeDataContext = createContext()
 
 export const BeeDataProvider = ({ children }) => {
+    const [apiaries, setApiaries] = useState(initialApiaries)
     const [hiveList, setHiveList] = useState(initialHives)
     const [visitList, setVisitList] = useState(initialVisits)
-    const [apiary, setApiary] = useState(apiaryDefaults)
+    const [harvestList, setHarvestList] = useState(initialHarvests)
     const [equipment, setEquipment] = useState(initialEquipment)
     const [status, setStatus] = useState('idle')
     const [error, setError] = useState(null)
+
+    const addApiary = (payload) => {
+        const newApiary = { id: `apiary-${Date.now()}`, ...payload }
+        setApiaries((prev) => [...prev, newApiary])
+        return newApiary
+    }
+
+    const updateApiary = (id, updates) => {
+        setApiaries((prev) => prev.map((item) => (item.id === id ? { ...item, ...updates } : item)))
+    }
+
+    const addHive = (payload) => {
+        const newHive = {
+            id: `hive-${Date.now()}`,
+            status: 'active',
+            population: 'Moyenne',
+            ...payload,
+        }
+        setHiveList((prev) => [...prev, newHive])
+        return newHive
+    }
+
+    const updateHive = (id, updates) => {
+        setHiveList((prev) => prev.map((hive) => (hive.id === id ? { ...hive, ...updates } : hive)))
+    }
 
     const addVisit = (payload) => {
         setStatus('loading')
@@ -26,20 +58,34 @@ export const BeeDataProvider = ({ children }) => {
         }
     }
 
-    const addHive = (payload) => {
-        const newHive = { id: `hive-${Date.now()}`, status: 'active', population: 'Moyenne', ...payload }
-        setHiveList((prev) => [...prev, newHive])
-        return newHive
+    const updateVisit = (id, updates) => {
+        setVisitList((prev) => prev.map((visit) => (visit.id === id ? { ...visit, ...updates } : visit)))
     }
 
-    const updateApiary = (updates) => {
-        setApiary((prev) => ({ ...prev, ...updates }))
+    const addHarvest = (payload) => {
+        const newHarvest = { id: `harvest-${Date.now()}`, ...payload }
+        setHarvestList((prev) => [...prev, newHarvest])
+        return newHarvest
+    }
+
+    const updateHarvest = (id, updates) => {
+        setHarvestList((prev) => prev.map((item) => (item.id === id ? { ...item, ...updates } : item)))
+    }
+
+    const addEquipment = (payload) => {
+        const newEquipment = { id: `eq-${Date.now()}`, needed: 0, inStock: 0, ...payload }
+        setEquipment((prev) => [...prev, newEquipment])
+        return newEquipment
     }
 
     const updateEquipmentStock = (id, delta) => {
         setEquipment((prev) =>
             prev.map((item) => (item.id === id ? { ...item, inStock: Math.max(0, item.inStock + delta) } : item)),
         )
+    }
+
+    const updateEquipment = (id, updates) => {
+        setEquipment((prev) => prev.map((item) => (item.id === id ? { ...item, ...updates } : item)))
     }
 
     const metrics = useMemo(() => {
@@ -55,19 +101,29 @@ export const BeeDataProvider = ({ children }) => {
             ? Math.round(visitList.reduce((sum, v) => sum + (v.weight || 0), 0) / visitList.length)
             : 0
 
+        const totalHarvestKg = harvestList.reduce((sum, harvest) => sum + (harvest.quantityKg || 0), 0)
+
         const health = avgWeight >= 34 ? 'Excellente' : avgWeight >= 30 ? 'Bonne' : 'À surveiller'
 
-        return { activeHives, visitsLast30Days, health, avgWeight }
-    }, [hiveList, visitList])
+        return { activeHives, visitsLast30Days, health, avgWeight, totalHarvestKg }
+    }, [hiveList, visitList, harvestList])
 
     const value = {
+        apiaries,
         hives: hiveList,
         visits: visitList,
-        apiary,
+        harvests: harvestList,
         equipment,
-        addVisit,
-        addHive,
+        addApiary,
         updateApiary,
+        addVisit,
+        updateVisit,
+        addHive,
+        updateHive,
+        addHarvest,
+        updateHarvest,
+        addEquipment,
+        updateEquipment,
         updateEquipmentStock,
         metrics,
         status,
