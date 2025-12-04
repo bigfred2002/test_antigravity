@@ -105,6 +105,45 @@ button {
     font-weight: 600;
 }
 
+.nav-toggle {
+    width: 100%;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+}
+
+.nav-subsection {
+    padding-left: 0.5rem;
+    border-left: 2px solid var(--border);
+    margin-bottom: 0.5rem;
+}
+
+.nav-subtoggle {
+    width: 100%;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--foreground);
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.nav-subsection .nav-item {
+    margin-left: 0.5rem;
+}
+
+.rotated {
+    transform: rotate(180deg);
+    transition: transform 0.2s ease;
+}
+
 .content {
     flex: 1;
     display: flex;
@@ -651,6 +690,13 @@ button {
     gap: 1rem;
 }
 
+.upload-inline {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
 .definition-grid,
 .hive-grid,
 .equipment-grid {
@@ -914,7 +960,7 @@ button {
 
 .auth-illustration {
     background-image: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.65)),
-        url('https://static.wixstatic.com/media/14438f_becf4114b7694e01abc8b868718ad26a~mv2.jpg/v1/fill/w_1200,h_800,q_85/14438f_becf4114b7694e01abc8b868718ad26a~mv2.jpg');
+        url('/images/auth-illustration.jpg');
     background-size: cover;
     background-position: center;
     color: #f8fafc;

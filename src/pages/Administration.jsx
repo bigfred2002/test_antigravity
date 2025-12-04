@@ -1,19 +1,28 @@
 import React, { useMemo, useState } from 'react'
-import { Download, FileSpreadsheet, Mail, RefreshCw } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { BookOpenCheck, Download, FileSpreadsheet, Mail, RefreshCw } from 'lucide-react'
 import { useBeeData } from '../context/BeeDataContext'
 
 const Administration = () => {
-    const { exportData, importData, visits, equipment } = useBeeData()
+    const { exportData, importData, visits, equipment, harvests, knowledge } = useBeeData()
     const [reportType, setReportType] = useState('visits')
     const [email, setEmail] = useState('')
     const [feedback, setFeedback] = useState('')
+
+    const reportOptions = {
+        visits: 'Visites',
+        inventory: 'Inventaires',
+        harvests: 'Récoltes',
+    }
 
     const stats = useMemo(
         () => ({
             visits: visits.length,
             equipment: equipment.length,
+            harvests: harvests.length,
+            documents: knowledge.documents?.length || 0,
         }),
-        [visits, equipment],
+        [visits, equipment, harvests, knowledge.documents],
     )
 
     const handleExport = () => {
@@ -46,9 +55,70 @@ const Administration = () => {
         reader.readAsText(file)
     }
 
+    const buildReport = () => {
+        const generatedAt = new Date().toISOString()
+        if (reportType === 'visits') {
+            return {
+                generatedAt,
+                type: 'visits',
+                total: visits.length,
+                visits: visits.map((visit) => ({
+                    id: visit.id,
+                    apiaryId: visit.apiaryId,
+                    hiveId: visit.hiveId,
+                    date: visit.date,
+                    weight: visit.weight,
+                    notes: visit.notes,
+                })),
+            }
+        }
+        if (reportType === 'inventory') {
+            return {
+                generatedAt,
+                type: 'inventory',
+                total: equipment.length,
+                items: equipment.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                    category: item.category,
+                    needed: item.needed,
+                    inStock: item.inStock,
+                })),
+            }
+        }
+        return {
+            generatedAt,
+            type: 'harvests',
+            total: harvests.length,
+            harvests: harvests.map((harvest) => ({
+                id: harvest.id,
+                apiaryId: harvest.apiaryId,
+                hiveId: harvest.hiveId,
+                date: harvest.date,
+                lot: harvest.lot,
+                quantityKg: harvest.quantityKg,
+                honeyType: harvest.honeyType,
+            })),
+        }
+    }
+
+    const handleGenerateReport = () => {
+        const payload = buildReport()
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `rapport-${reportType}-${new Date().toISOString().slice(0, 10)}.json`
+        link.click()
+        URL.revokeObjectURL(url)
+        const label = reportOptions[reportType] || 'rapport'
+        setFeedback(`Rapport ${label} généré et téléchargé.`)
+    }
+
     const handleShare = (event) => {
         event.preventDefault()
-        setFeedback(`Un rapport ${reportType} est prêt pour ${email || 'votre destinataire'}.`)
+        const label = reportOptions[reportType] || 'rapport'
+        setFeedback(`Un rapport ${label} est prêt pour ${email || 'votre destinataire'}.`)
     }
 
     return (
@@ -58,8 +128,8 @@ const Administration = () => {
                     <p className="eyebrow">Administration</p>
                     <h3>Sauvegardes et diffusion des rapports</h3>
                     <p className="panel-caption">
-                        Centralisez les sauvegardes, restaurez vos données locales et partagez les rapports de visites ou
-                        d’inventaire par e-mail.
+                        Centralisez les sauvegardes, restaurez vos données locales, téléchargez des rapports et gérez la base
+                        de connaissance sans dépendre de ressources externes.
                     </p>
                 </div>
             </header>
@@ -92,7 +162,7 @@ const Administration = () => {
                             <h4>Rapports</h4>
                             <FileSpreadsheet size={18} />
                         </div>
-                        <p className="muted">Générez un rapport synthétique pour vos visites ou vos inventaires.</p>
+                        <p className="muted">Générez un rapport synthétique et téléchargez-le instantanément.</p>
                         <form className="definition-form" onSubmit={(event) => event.preventDefault()}>
                             <div className="form-group">
                                 <label htmlFor="reportType">Type de rapport</label>
@@ -102,11 +172,12 @@ const Administration = () => {
                                     onChange={(event) => setReportType(event.target.value)}
                                 >
                                     <option value="visits">Visites</option>
-                                    <option value="inventaires">Inventaires</option>
+                                    <option value="inventory">Inventaires</option>
+                                    <option value="harvests">Récoltes</option>
                                 </select>
                             </div>
-                            <button type="button" className="btn-primary" onClick={() => setFeedback('Rapport généré')}>
-                                Générer
+                            <button type="button" className="btn-primary" onClick={handleGenerateReport}>
+                                Générer et télécharger
                             </button>
                         </form>
                     </article>
@@ -115,7 +186,7 @@ const Administration = () => {
                             <h4>Partage par e-mail</h4>
                             <Mail size={18} />
                         </div>
-                        <p className="muted">Envoyez rapidement un rapport de visite ou d’inventaire.</p>
+                        <p className="muted">Envoyez rapidement un rapport de visite, d’inventaire ou de récoltes.</p>
                         <form className="definition-form" onSubmit={handleShare}>
                             <div className="form-group">
                                 <label htmlFor="email">Destinataire</label>
@@ -134,14 +205,29 @@ const Administration = () => {
                                     value={reportType}
                                     onChange={(event) => setReportType(event.target.value)}
                                 >
-                                    <option value="visites">Visites</option>
-                                    <option value="inventaires">Inventaires</option>
+                                    <option value="visits">Visites</option>
+                                    <option value="inventory">Inventaires</option>
+                                    <option value="harvests">Récoltes</option>
                                 </select>
                             </div>
                             <button type="submit" className="btn-primary">
                                 Préparer l’envoi
                             </button>
                         </form>
+                    </article>
+                    <article className="definition-card">
+                        <div className="card-header">
+                            <h4>Mise à jour base de connaissance</h4>
+                            <BookOpenCheck size={18} />
+                        </div>
+                        <p className="muted">
+                            Ajoutez contacts, liens utiles et documents stockés localement depuis l’espace
+                            d’administration.
+                        </p>
+                        <p className="muted small">{stats.documents} documents déjà disponibles.</p>
+                        <Link to="/administration/knowledge" className="btn-primary">
+                            Gérer la base
+                        </Link>
                     </article>
                 </div>
             </section>
@@ -157,6 +243,8 @@ const Administration = () => {
                 <div className="pill-row">
                     <div className="pill">{stats.visits} visites historisées</div>
                     <div className="pill">{stats.equipment} éléments d’inventaire</div>
+                    <div className="pill">{stats.harvests} lots de récolte</div>
+                    <div className="pill">{stats.documents} documents enregistrés</div>
                 </div>
                 {feedback && (
                     <div className="alert success" role="status">

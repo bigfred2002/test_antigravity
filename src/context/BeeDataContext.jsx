@@ -12,13 +12,37 @@ import {
 const BeeDataContext = createContext()
 const STORAGE_PREFIX = 'bee-data-store'
 
+const normalizeWithIds = (items, prefix) =>
+    (items || []).map((item, index) => {
+        if (typeof item === 'string') {
+            return { id: `${prefix}-${index}`, name: item, detail: '' }
+        }
+        return item.id ? item : { ...item, id: `${prefix}-${index}` }
+    })
+
+const normalizeDocuments = (documents) =>
+    (documents || []).map((doc, index) => {
+        if (typeof doc === 'string') {
+            return { id: `doc-${index}`, name: doc, uploadedAt: new Date().toISOString().slice(0, 10) }
+        }
+        return { ...doc, id: doc.id || `doc-${index}` }
+    })
+
+const normalizeKnowledge = (knowledge) => ({
+    contacts: normalizeWithIds(knowledge?.contacts, 'contact'),
+    sites: normalizeWithIds(knowledge?.sites, 'site'),
+    documents: normalizeDocuments(knowledge?.documents),
+})
+
+const normalizedInitialKnowledge = normalizeKnowledge(initialKnowledge)
+
 const defaultEmptyData = {
     apiaries: [],
     hives: [],
     visits: [],
     harvests: [],
     equipment: [],
-    knowledge: initialKnowledge,
+    knowledge: normalizedInitialKnowledge,
     movements: [],
 }
 
@@ -28,7 +52,7 @@ const seededData = {
     visits: initialVisits,
     harvests: initialHarvests,
     equipment: initialEquipment,
-    knowledge: initialKnowledge,
+    knowledge: normalizedInitialKnowledge,
     movements: [],
 }
 
@@ -73,7 +97,7 @@ export const BeeDataProvider = ({ children }) => {
             setVisitList(defaultEmptyData.visits)
             setHarvestList(defaultEmptyData.harvests)
             setEquipment(defaultEmptyData.equipment)
-            setKnowledge(defaultEmptyData.knowledge)
+            setKnowledge(normalizeKnowledge(defaultEmptyData.knowledge))
             setMovements(defaultEmptyData.movements)
             return
         }
@@ -86,7 +110,7 @@ export const BeeDataProvider = ({ children }) => {
         setVisitList(getWithFallback(persisted, 'visits', baseData.visits))
         setHarvestList(getWithFallback(persisted, 'harvests', baseData.harvests))
         setEquipment(getWithFallback(persisted, 'equipment', baseData.equipment))
-        setKnowledge(getWithFallback(persisted, 'knowledge', baseData.knowledge))
+        setKnowledge(normalizeKnowledge(getWithFallback(persisted, 'knowledge', baseData.knowledge)))
         setMovements(getWithFallback(persisted, 'movements', baseData.movements))
     }, [currentUser])
 
@@ -189,6 +213,23 @@ export const BeeDataProvider = ({ children }) => {
         })
     }
 
+    const addKnowledgeDocument = (document) => {
+        const payload = {
+            id: document.id || `doc-${Date.now()}`,
+            uploadedAt: document.uploadedAt || new Date().toISOString().slice(0, 10),
+            ...document,
+        }
+        setKnowledge((prev) => ({ ...prev, documents: [...(prev.documents || []), payload] }))
+        return payload
+    }
+
+    const removeKnowledgeDocument = (id) => {
+        setKnowledge((prev) => ({
+            ...prev,
+            documents: (prev.documents || []).filter((doc) => doc.id !== id),
+        }))
+    }
+
     const metrics = useMemo(() => {
         const activeHives = hiveList.filter((hive) => hive.status !== 'archived').length
         const visitsLast30Days = visitList.filter((visit) => {
@@ -227,7 +268,7 @@ export const BeeDataProvider = ({ children }) => {
         setVisitList(snapshot.visits ?? [])
         setHarvestList(snapshot.harvests ?? [])
         setEquipment(snapshot.equipment ?? [])
-        setKnowledge(snapshot.knowledge ?? initialKnowledge)
+        setKnowledge(normalizeKnowledge(snapshot.knowledge ?? initialKnowledge))
         setMovements(snapshot.movements ?? [])
     }
 
@@ -253,6 +294,8 @@ export const BeeDataProvider = ({ children }) => {
         metrics,
         knowledge,
         updateKnowledge,
+        addKnowledgeDocument,
+        removeKnowledgeDocument,
         status,
         error,
         resetStatus: () => setStatus('idle'),
